@@ -2,19 +2,38 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerCraft</title>
 </head>
-<div class="topContainer">
-  <div class="logo">CareerCraft</div>
-  <div class="navBar">
-      <a href="/profile" class="btn">Profile</a>
-      <a href="/logout" class="btn" style="background-color: red !important;">Logout</a>
-    </ul>
-  </div>
-</div>
+
 <body>
+  <div class="topContainer">
+    <div class="logo">CareerCraft</div>
+
+    <div class="container text-center my-2">
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="/skill-assessment" class="btn btn-primary">Skill Assessment</a>
+        <a href="/career-suggestions" class="btn btn-success">Career Suggestions</a>
+        <a href="/job-market" class="btn btn-info text-white">Job Market</a>
+      </div>
+    </div>
+    
+
+    <div class="navBar">
+      <% if (user) { %>
+        <a href="/logout" class="btn" style="background-color: #ff4d4d !important; color: white;">
+          Logout
+        </a>
+        <% } else { %>
+          <a href="/login" class="btn">
+            Login </a>
+          <a href="/signup" class="btn">
+            Sign Up
+          </a>
+          <% } %>
+    </div>
+  </div>
 </body>
 
 </html>

@@ -94,6 +94,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// This goes before all your routes
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
+
+
 // Routes
 app.use("/", authRoutes);
 app.use("/", skillAssessment);
