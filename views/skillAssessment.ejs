@@ -35,7 +35,7 @@
     <h3 class="text-center mb-4">Skill Assessment !!!</h3>
 
     <div class="card p-4">
-      <form>
+      <form id="skillAssessmentForm">
         <!-- Programming Languages Autocomplete -->
         <div class="mb-3 autocomplete-wrapper">
           <label for="languageInput" class="form-label">Programming Languages</label>
@@ -73,33 +73,32 @@
   <script>
     // Example suggestion arrays – replace these with your own
     const languageOptions = [
-  "Python", "JavaScript", "Java", "C", "C++", "C#", "Go", "Rust", "Ruby", "PHP",
-  "TypeScript", "Swift", "Kotlin", "Perl", "Scala", "Objective-C", "R", "MATLAB",
-  "Dart", "Haskell", "Elixir", "Lua", "Visual Basic", "Assembly", "Fortran", "COBOL",
-  "F#", "Groovy", "Erlang", "Julia", "Shell", "SQL", "SAS", "VB.NET", "Ada", "Lisp",
-  "Prolog", "Scheme", "OCaml", "Crystal", "Bash", "PowerShell", "Delphi", "Hack",
-  "Nim", "Zig", "VHDL", "Verilog", "ABAP", "ActionScript", "Apex", "Awk", "Ballerina",
-  "Elm", "Factor", "Forth", "GAMS", "Idris", "Io", "J", "LabVIEW", "Mercury", "Modula-2",
-  "NATURAL", "Nimrod", "PL/I", "PL/SQL", "PostScript", "Racket", "REXX", "Smalltalk",
-  "SPARK", "Tcl", "Vala", "VimL", "Xojo", "Yorick"
-];
+      "Python", "JavaScript", "Java", "C", "C++", "C#", "Go", "Rust", "Ruby", "PHP",
+      "TypeScript", "Swift", "Kotlin", "Perl", "Scala", "Objective-C", "R", "MATLAB",
+      "Dart", "Haskell", "Elixir", "Lua", "Visual Basic", "Assembly", "Fortran", "COBOL",
+      "F#", "Groovy", "Erlang", "Julia", "Shell", "SQL", "SAS", "VB.NET", "Ada", "Lisp",
+      "Prolog", "Scheme", "OCaml", "Crystal", "Bash", "PowerShell", "Delphi", "Hack",
+      "Nim", "Zig", "VHDL", "Verilog", "ABAP", "ActionScript", "Apex", "Awk", "Ballerina",
+      "Elm", "Factor", "Forth", "GAMS", "Idris", "Io", "J", "LabVIEW", "Mercury", "Modula-2",
+      "NATURAL", "Nimrod", "PL/I", "PL/SQL", "PostScript", "Racket", "REXX", "Smalltalk",
+      "SPARK", "Tcl", "Vala", "VimL", "Xojo", "Yorick"
+    ];
 
-const toolOptions = [
-  "Git", "GitHub", "GitLab", "Bitbucket", "VS Code", "Visual Studio", "Eclipse",
-  "IntelliJ IDEA", "PyCharm", "NetBeans", "Xcode", "Android Studio", "Jupyter",
-  "Docker", "Kubernetes", "Postman", "Figma", "Slack", "Jira", "Trello", "Asana",
-  "CircleCI", "Travis CI", "Jenkins", "TeamCity", "Gradle", "Maven", "Ant", "Selenium",
-  "Cypress", "TestNG", "JUnit", "NUnit", "Mocha", "Chai", "Webpack", "Babel", "ESLint",
-  "Prettier", "SonarQube", "New Relic", "Datadog", "Splunk", "Nagios", "Prometheus",
-  "Grafana", "AWS", "Azure", "Google Cloud Platform", "Heroku", "Firebase", "DigitalOcean",
-  "Linode", "Vagrant", "Ansible", "Chef", "Puppet", "Terraform", "OpenShift", "Bitrise",
-  "Fastlane", "Appium", "Robot Framework", "Cucumber", "Swagger", "Kibana", "Logstash",
-  "ElasticSearch", "Tableau", "Power BI", "QlikView", "Looker", "DBeaver", "MySQL Workbench",
-  "pgAdmin", "MongoDB Compass", "RStudio", "Spyder", "Atom", "Sublime Text", "Notepad++",
-  "Emacs", "Vim", "Code::Blocks", "BlueJ", "DrJava", "JDeveloper", "Qt Creator", "RubyMine",
-  "CLion", "WebStorm", "PhpStorm", "DataGrip", "Rider", "AppCode", "Komodo IDE", "Zend Studio"
-];
-
+    const toolOptions = [
+      "Git", "GitHub", "GitLab", "Bitbucket", "VS Code", "Visual Studio", "Eclipse",
+      "IntelliJ IDEA", "PyCharm", "NetBeans", "Xcode", "Android Studio", "Jupyter",
+      "Docker", "Kubernetes", "Postman", "Figma", "Slack", "Jira", "Trello", "Asana",
+      "CircleCI", "Travis CI", "Jenkins", "TeamCity", "Gradle", "Maven", "Ant", "Selenium",
+      "Cypress", "TestNG", "JUnit", "NUnit", "Mocha", "Chai", "Webpack", "Babel", "ESLint",
+      "Prettier", "SonarQube", "New Relic", "Datadog", "Splunk", "Nagios", "Prometheus",
+      "Grafana", "AWS", "Azure", "Google Cloud Platform", "Heroku", "Firebase", "DigitalOcean",
+      "Linode", "Vagrant", "Ansible", "Chef", "Puppet", "Terraform", "OpenShift", "Bitrise",
+      "Fastlane", "Appium", "Robot Framework", "Cucumber", "Swagger", "Kibana", "Logstash",
+      "ElasticSearch", "Tableau", "Power BI", "QlikView", "Looker", "DBeaver", "MySQL Workbench",
+      "pgAdmin", "MongoDB Compass", "RStudio", "Spyder", "Atom", "Sublime Text", "Notepad++",
+      "Emacs", "Vim", "Code::Blocks", "BlueJ", "DrJava", "JDeveloper", "Qt Creator", "RubyMine",
+      "CLion", "WebStorm", "PhpStorm", "DataGrip", "Rider", "AppCode", "Komodo IDE", "Zend Studio"
+    ];
 
     function setupAutocomplete(inputId, suggestionBoxId, options) {
       const input = document.getElementById(inputId);
@@ -141,5 +140,47 @@ const toolOptions = [
 
     setupAutocomplete("languageInput", "languageSuggestions", languageOptions);
     setupAutocomplete("toolsInput", "toolsSuggestions", toolOptions);
+
+    // Handle form submission
+    // Handle form submission
+const form = document.getElementById("skillAssessmentForm");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();  // Prevent form from reloading the page
+
+  const languages = document.getElementById("languageInput").value.split(",").map(item => item.trim());
+  const tools = document.getElementById("toolsInput").value.split(",").map(item => item.trim());
+  const softSkills = document.getElementById("softSkillsSelect").value;
+
+  // Log data being sent
+  console.log("Languages: ", languages);
+  console.log("Tools: ", tools);
+  console.log("Soft Skills: ", softSkills);
+
+  // Send data to the server
+  try {
+    const response = await fetch('/update-skill-assessment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        languages,
+        tools,
+        softSkills
+      })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert("Profile updated successfully");
+    } else {
+      alert("Failed to update profile");
+    }
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    alert("An error occurred while updating the profile");
+  }
+});
+
   </script>
 </body>

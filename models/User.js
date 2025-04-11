@@ -2,32 +2,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    preferredLanguages: {
-        type: [String],  // Array of Strings to store programming languages
-        required: false  // This can be optional depending on your use case
-    },
-    preferredTools: {
-        type: [String],  // Array of Strings to store tools/software
-        required: false  // This can be optional as well
-    },
-    softSkills: {
-        type: [String],  // Array of Strings to store soft skills
-        required: false  // This can be optional
-    }
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    programmingLanguages: { type: [String], required: false },
+    toolsSoftware: { type: [String], required: false },
+    softSkills: { type: [String], required: false }
 });
+
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
