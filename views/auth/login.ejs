@@ -1,0 +1,33 @@
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/auth.css" />
+</head>
+
+<%- layout('layouts/boilerplate') %>
+
+<body>
+    <div class="container">
+        <div class="main">
+            <h2>Login</h2>
+            <form action="/login" class="form" method="POST">
+                <span class="input-span">
+                    <label for="username" class="label">Email</label>
+                    <input type="email" name="username" id="username" /></span>
+                <span class="input-span">
+                    <label for="password" class="label">Password</label>
+                    <input type="password" name="password" id="password" /></span>
+                <span class="span"><a href="#">Forgot password?</a></span>
+                <button type="submit" class="submit">Login</button>
+                <span class="span">Don't have an account? <a href="signup">Sign up</a></span>
+            </form>
+
+            <% if (error_message) { %>
+                <p>
+                    <%= error_message %>
+                </p>
+                <% } %>
+        </div>
+    </div>
+</body>
+
+</html>

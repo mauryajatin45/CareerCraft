@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.topBar {
+    height: 6.5vh;
+    width: 100%;
+    background-color: rgba(61, 61, 61, 1);
+    display: flex;
+}
+
+.sideBar {
+    width: 20%;
+    margin-top: 6.5vh;
+    height: calc(100vh - 6.5vh);
+    background-color: rgba(64, 64, 64, 1);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.mainScreen {
+    width: 80%;
+    position: fixed;
+    margin-left: 20%;
+    height: calc(100vh - 6.5vh);
+    background-color: rgba(122, 118, 118, 0.75);
+    overflow-y: auto;
+}
+
+.topBar .logo img {
+    width: 40px;
+    margin-left: 0.5rem;
+    margin-top: 0.2rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    gap: 0.5rem;
+    width: fit-content;
+}
+
+.logoPara {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.options {
+    height: 65%;
+    margin: auto;
+    top: 0;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    color: white;
+    box-shadow: 0px 0px 5px rgb(97, 97, 97);
+    border-radius: 7%;
+}
+
+.options > div {
+    width: 100%;
+    height: 100%;
+    padding-left: 0.5rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    padding-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.options > div:hover {
+    background-color: lightgray;
+    color: black;
+    cursor: pointer;
+    border-radius: 7%;
+}
