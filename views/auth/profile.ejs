@@ -1,11 +1,166 @@
-<%- layout('layouts/boilerplate') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+
+  <!-- Link to Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .profile-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      margin-left: 20% ;
+    }
+    .profile-card {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+      width: 80%;
+      max-width: 900px;
+    }
+    .profile-header {
+      background-color: #007bff;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-top: 10px;
+    }
+    .profile-body {
+      padding: 30px;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .profile-info {
+      margin-bottom: 20px;
+    }
+    .profile-info p {
+      font-size: 1rem;
+      color: #555;
+    }
+    .profile-info ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .profile-info li {
+      background-color: #f1f1f1;
+      padding: 8px 15px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
 
 <body>
-    <!-- Show profile Info -->
-    <div class="container mt-5">
-        <h1>Profile</h1>
-        <p><strong>Name:</strong> <%= user.name %></p>
-        <p><strong>Email:</strong> <%= user.username %></p>
-        <!-- <p><strong>Role:</strong> <%= user.role %></p> -->
+
+<div class="container profile-container">
+  <!-- Profile Card -->
+  <div class="profile-card">
+    <!-- Profile Header (Image and Name) -->
+    <div class="profile-header">
+      <img src="images/Logo.png" alt="User Profile Picture">
+      <h2><%= user.name %></h2>
+      <p class="lead"><%= user.username %></p>
     </div>
+
+    <!-- Profile Body -->
+    <div class="profile-body">
+      <!-- Name Section -->
+      <div class="profile-info">
+        <h3 class="section-title">Name:</h3>
+        <p><%= user.name %></p>
+      </div>
+
+      <!-- Email Section -->
+      <div class="profile-info">
+        <h3 class="section-title">Email:</h3>
+        <p><%= user.username %></p>
+      </div>
+
+      <!-- Preferred Programming Languages -->
+      <div class="profile-info">
+        <h3 class="section-title">Preferred Programming Languages:</h3>
+        <% if (user.preferredLanguages && user.preferredLanguages.length > 0) { %>
+          <ul>
+            <% user.preferredLanguages.forEach(language => { %>
+              <li><%= language %></li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p>Complete profile to see this</p>
+        <% } %>
+      </div>
+
+      <!-- Preferred Tools -->
+      <div class="profile-info">
+        <h3 class="section-title">Preferred Tools/Software:</h3>
+        <% if (user.preferredTools && user.preferredTools.length > 0) { %>
+          <ul>
+            <% user.preferredTools.forEach(tool => { %>
+              <li><%= tool %></li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p>Complete profile to see this</p>
+        <% } %>
+      </div>
+
+      <!-- Soft Skills Section -->
+      <div class="profile-info">
+        <h3 class="section-title">Soft Skills:</h3>
+        <% if (user.softSkills && user.softSkills.length > 0) { %>
+          <ul>
+            <% user.softSkills.forEach(skill => { %>
+              <li><%= skill %></li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p>Complete profile to see this</p>
+        <% } %>
+      </div>
+
+      <!-- Button to Edit Profile -->
+      <div class="button-container">
+        <a href="/edit-profile" class="btn btn-primary">Edit Profile</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS (optional but useful for certain interactions) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
+</html>

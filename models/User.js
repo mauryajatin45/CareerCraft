@@ -11,9 +11,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    name:{
+    name: {
         type: String,
         required: true
+    },
+    preferredLanguages: {
+        type: [String],  // Array of Strings to store programming languages
+        required: false  // This can be optional depending on your use case
+    },
+    preferredTools: {
+        type: [String],  // Array of Strings to store tools/software
+        required: false  // This can be optional as well
+    },
+    softSkills: {
+        type: [String],  // Array of Strings to store soft skills
+        required: false  // This can be optional
     }
 });
 
