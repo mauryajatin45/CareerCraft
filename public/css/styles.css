@@ -18,8 +18,10 @@
 }
 
 .container{
-    width: 80%;
-    margin: auto;
+    width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    /* margin: auto; */
 }
 .topContainer{
     display: flex;

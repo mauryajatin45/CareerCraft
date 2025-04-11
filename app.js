@@ -15,6 +15,7 @@ const Resume = require('./models/Resume'); // Assuming you have a Resume model
 // Import routes and passport strategy
 const authRoutes = require('./routes/authRoutes');
 const skillAssessment = require('./routes/skillAssessment');
+const temp = require('./routes/temp');
 const resumeRoutes = require('./routes/resume-interview'); // Assuming you have a resume-interview route
 
 const User = require('./models/User'); 
@@ -108,7 +109,6 @@ app.use(express.json());
 // Routes
 app.use("/", authRoutes);
 app.use("/", skillAssessment);
-app.use("/", resumeRoutes); // Use the resume-interview route
 
 // 404 Handler
 app.use((req, res, next) => {
