@@ -13,6 +13,7 @@ require('dotenv').config(); // 🔥 Load environment variables from .env
 // Import routes and passport strategy
 const authRoutes = require('./routes/authRoutes');
 const skillAssessment = require('./routes/skillAssessment');
+const temp = require('./routes/temp');
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
@@ -105,6 +106,7 @@ app.use(express.json());
 // Routes
 app.use("/", authRoutes);
 app.use("/", skillAssessment);
+app.use("/", temp);
 
 // 404 Handler
 app.use((req, res, next) => {

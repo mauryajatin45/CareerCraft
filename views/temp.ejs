@@ -1,0 +1,286 @@
+<%- layout('layouts/boilerplate') %>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Assessment</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+
+    body {
+      background-color: #1e1e1e;
+      color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-container {
+      height: 95vh;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      
+    }
+
+    .question-box {
+        margin-left: 8.5rem;
+      background-color: #ffffff;
+      color: #000;
+      border-radius: 15px;
+      padding: 15px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .question-header {
+      background-color: #007bff;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 20px;
+      padding: 12px;
+      text-align: center;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .form-check-label {
+      color: #000;
+    }
+
+    .editor-section {
+      background-color: #1e1e1e;
+      color: #fff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .editor-card {
+      background-color: #2a2d2e;
+      padding: 15px;
+      border-radius: 10px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .form-select {
+      width: 180px;
+      font-size: 0.9rem;
+    }
+
+    .run-button {
+      background-color: #007bff;
+      color: white;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .run-button:hover {
+      background-color: #0056b3;
+    }
+
+    .monaco-editor-container {
+      height: 250px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .terminal {
+      margin-top: 15px;
+      background-color: #343a40;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid #555;
+      height: 250px;
+      overflow-y: auto;
+    }
+
+    /* Scrollbar Styling */
+    .terminal::-webkit-scrollbar,
+    .monaco-editor-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .terminal::-webkit-scrollbar-track,
+    .monaco-editor-container::-webkit-scrollbar-track {
+      background: #2a2d2e;
+    }
+
+    .terminal::-webkit-scrollbar-thumb,
+    .monaco-editor-container::-webkit-scrollbar-thumb {
+      background-color: #5a5a5a;
+      border-radius: 4px;
+      border: 2px solid #2a2d2e;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .form-select {
+        width: 100%;
+      }
+
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+    <!-- Left Panel -->
+    <div class="question-box">
+      <div>
+        <div class="question-header">Question 1</div>
+        <div class="my-3">
+          <h5><strong>Q:</strong> What is the output of the following code?</h5>
+        </div>
+        <div class="form-check mt-3">
+          <input class="form-check-input" type="radio" name="answer" id="option1">
+          <label class="form-check-label" for="option1">Option 1</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="answer" id="option2">
+          <label class="form-check-label" for="option2">Option 2</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="answer" id="option3">
+          <label class="form-check-label" for="option3">Option 3</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="answer" id="option4">
+          <label class="form-check-label" for="option4">Option 4</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="editor-section">
+      <div class="editor-card">
+        <div class="controls-row">
+          <select id="languageSelect" class="form-select">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="c">C</option>
+            <option value="java">Java</option>
+          </select>
+          <button class="run-button" onclick="runCode()">Run</button>
+        </div>
+        <div id="editor" class="monaco-editor-container"></div>
+      </div>
+      <div class="terminal mt-3">
+        <h6>Terminal</h6>
+        <div id="terminal" class="monaco-editor-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monaco Editor Script -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    let editor, terminalEditor;
+
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+
+    require(['vs/editor/editor.main'], function () {
+      editor = monaco.editor.create(document.getElementById('editor'), {
+        value: "// Write your code here\n",
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+
+      terminalEditor = monaco.editor.create(document.getElementById('terminal'), {
+        value: "// Output will be shown here\n",
+        language: 'plaintext',
+        theme: 'vs-dark',
+        readOnly: true,
+        automaticLayout: true
+      });
+
+      document.getElementById('languageSelect').addEventListener('change', function () {
+        const selectedLanguage = this.value;
+        monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage);
+      });
+    });
+
+    const languageMap = {
+      javascript: null,
+      python: 71,
+      c: 50,
+      cpp: 54,
+      java: 62
+    };
+
+    async function runCode() {
+      const code = editor.getValue();
+      const lang = document.getElementById('languageSelect').value;
+      const languageId = languageMap[lang];
+
+      if (lang === 'javascript') {
+        try {
+          let capturedOutput = '';
+          const originalLog = console.log;
+          console.log = function (...args) {
+            capturedOutput += args.join(' ') + '\n';
+            originalLog.apply(console, args);
+          };
+          eval(code);
+          console.log = originalLog;
+          terminalEditor.setValue(capturedOutput || "✅ No output");
+        } catch (e) {
+          terminalEditor.setValue("❌ Error: " + e.message);
+        }
+        return;
+      }
+
+      terminalEditor.setValue("⏳ Running your code...");
+
+      try {
+        const response = await fetch('/run-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            sourceCode: code,
+            languageId: languageId,
+            stdin: '',
+            expectedOutput: ''
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          terminalEditor.setValue(result.data.stdout || "✅ No output");
+        } else {
+          terminalEditor.setValue("❌ Error:\n" + result.error);
+        }
+      } catch (error) {
+        terminalEditor.setValue("🚨 Execution failed:\n" + error.message);
+      }
+    }
+  </script>
+</body>

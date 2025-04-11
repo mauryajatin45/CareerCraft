@@ -1,7 +1,78 @@
 <%- layout('layouts/boilerplate') %>
+
 <head>
-    <link rel="stylesheet" href="/css/home.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Background Image Styling */
+    .bg-img {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      z-index: -1;
+    }
+
+    .bg-img img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    /* Main Container Styling */
+    .main-content {
+      position: relative;
+      z-index: 10; /* Ensures it's above the image */
+    }
+
+    .fst-italic {
+      color: rgb(249, 240, 255);
+    }
+
+    .text-red {
+      color: red;
+    }
+
+    h1.display-5 {
+      font-size: 3rem;
+    }
+
+    .btn-rounded {
+      border-radius: 50px;
+    }
+  </style>
 </head>
-<body>
-    This is a Home Page
+
+<body class="bg-dark text-light">
+
+  <!-- Background Image -->
+  <div class="bg-img">
+    <img src="images/home-bg.jpg" alt="Background">
+  </div>
+
+  <!-- Foreground Content -->
+  <div class="container-fluid main-content d-flex flex-column justify-content-center align-items-center text-center min-vh-100">
+
+    <main class="px-3">
+      <h1 class="display-5 fw-bold text-danger mb-3">
+        Your Skills. Your Goals.<br>
+        <span class="text-red">Your Intelligent Career Path.</span>
+      </h1>
+      <p class="fst-italic text-white mb-4">
+        “Discover job roles that align with your unique skills and interests.”
+      </p>
+      <button class="btn btn-danger btn-lg btn-rounded px-4">
+        Start Your Smart Career Journey
+      </button>
+    </main>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
