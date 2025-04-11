@@ -16,23 +16,28 @@
         <a href="/skill-assessment" class="btn btn-primary">Skill Assessment</a>
         <a href="/career-suggestions" class="btn btn-success">Career Suggestions</a>
         <a href="/job-market" class="btn btn-info text-white">Job Market</a>
+        <a href="/resume&interviewprep" class="btn btn-warning text-white">Resume & Interview Prep</a>
+        <a href="/networking" class="btn btn-danger text-white">Networking</a>
       </div>
     </div>
     
 
     <div class="navBar">
       <% if (user) { %>
-        <a href="/logout" class="btn" style="background-color: #ff4d4d !important; color: white;">
-          Logout
-        </a>
-        <% } else { %>
-          <a href="/login" class="btn">
-            Login </a>
-          <a href="/signup" class="btn">
-            Sign Up
+        <div class="d-flex gap-3">
+          <a href="/logout" class="btn" style="background-color: #ff4d4d !important; color: white;">
+            Logout
           </a>
-          <% } %>
+          <a href="/profile" class="btn" style="background-color: #4d94ff !important; color: white;">
+            Profile
+          </a>
+        </div>
+      <% } else { %>
+        <a href="/login" class="btn">Login</a>
+        <a href="/signup" class="btn">Sign Up</a>
+      <% } %>
     </div>
+    
   </div>
 </body>
 
