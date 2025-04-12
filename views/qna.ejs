@@ -150,7 +150,9 @@
       <div class="mb-4">
         <div id="questionHeader" class="question-header">Question <%= currentQuestionIndex + 1 %></div>
         <div class="my-3">
-          <h5 id="questionText"><strong>Q:</strong> <%= questions[currentQuestionIndex].question %></h5>
+          <h5 id="questionText">
+            <strong>Q:</strong> <%= questions[currentQuestionIndex].question %>
+          </h5>
         </div>
 
         <!-- Container for Options -->
@@ -211,19 +213,17 @@
 
   <!-- Embed all MCQs so navigation is client-side -->
   <script>
+    // Parse server-passed MCQs and starting index.
     const mcqs = <%- JSON.stringify(userMCQs) %>;
-    // Default to 0 if currentQuestionIndex is not provided
     let currentQuestionIndex = typeof <%= currentQuestionIndex %> !== 'undefined' ? <%= currentQuestionIndex %> : 0;
-    
-    // Object to store the user's selected answers.
-    // The keys correspond to the question index, and the value is the selected answer (string).
+    // Object to store selected answers.
     let userAnswers = {};
-  
+
     /**
      * Update the question header, text, options, and navigation buttons.
      */
     function updateQuestionDisplay() {
-      // Update question header text
+      // Update question header
       const headerEl = document.getElementById('questionHeader');
       headerEl.innerText = 'Question ' + (currentQuestionIndex + 1);
   
@@ -231,20 +231,20 @@
       const questionTextEl = document.getElementById('questionText');
       questionTextEl.innerHTML = `<strong>Q:</strong> ${mcqs[currentQuestionIndex].question}`;
   
-      // Build options HTML
+      // Build options
       const optionsContainer = document.getElementById('optionsContainer');
       let optionsHTML = '';
       if(mcqs[currentQuestionIndex].options && mcqs[currentQuestionIndex].options.length > 0) {
         mcqs[currentQuestionIndex].options.forEach((option, index) => {
-          // Check if user had previously answered this question
+          // Pre-check if user already selected an answer
           const checked = userAnswers[currentQuestionIndex] === option.option ? 'checked' : '';
           optionsHTML += `
-          <div class="form-check mt-2">
-            <input class="form-check-input" type="radio" name="answer" value="${option.option}" id="q${currentQuestionIndex}o${index}" ${checked}>
-            <label class="form-check-label" for="q${currentQuestionIndex}o${index}">
-              ${option.option}
-            </label>
-          </div>
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="radio" name="answer" value="${option.option}" id="q${currentQuestionIndex}o${index}" ${checked}>
+              <label class="form-check-label" for="q${currentQuestionIndex}o${index}">
+                ${option.option}
+              </label>
+            </div>
           `;
         });
       } else {
@@ -252,7 +252,7 @@
       }
       optionsContainer.innerHTML = optionsHTML;
   
-      // Assign event listeners for the radio buttons to capture user's selection.
+      // Add event listeners for radio buttons to capture user selection.
       const radioButtons = document.querySelectorAll('input[name="answer"]');
       radioButtons.forEach(radio => {
         radio.addEventListener('change', function() {
@@ -260,7 +260,7 @@
         });
       });
   
-      // Update navigation buttons
+      // Set up navigation buttons
       const navButtonsContainer = document.getElementById('navButtons');
       let navHTML = '';
   
@@ -277,12 +277,12 @@
       }
       navButtonsContainer.innerHTML = navHTML;
   
-      // Reassign event listeners for navigation buttons
+      // Reassign event listeners
       assignNavButtonListeners();
     }
   
     /**
-     * Assign event listeners to the navigation buttons.
+     * Assign click event listeners for navigation buttons.
      */
     function assignNavButtonListeners() {
       const prevBtn = document.getElementById('prevBtn');
@@ -310,16 +310,16 @@
     }
   
     /**
-     * Gather the user's answers and submit them via a POST request.
+     * Gather all answers and submit them via a POST request.
      */
     function submitAnswers() {
-      // Construct an array of answer objects from the mcqs and userAnswers.
+      // Construct answers array: unanswered questions get `null`
       const answersToSubmit = mcqs.map((mcq, index) => ({
         mcqId: mcq._id,
         yourAnswer: userAnswers[index] || null
       }));
   
-      // POST the answers to the server
+      // Send POST request with the answers.
       fetch('/skill-assessment/gemini-questions', {
         method: 'POST',
         headers: {
@@ -331,7 +331,7 @@
       .then(data => {
         if(data.success) {
           alert('Submission successful!');
-          // Redirect the user to the performance page
+          // Redirect to performance view.
           window.location.href = data.redirectUrl;
         } else {
           alert('Submission failed. Please try again.');
@@ -343,15 +343,14 @@
       });
     }
   
-    // Trigger update on initial page load.
+    // Initialize the display when the page loads.
     updateQuestionDisplay();
   </script>
-  
 
   <!-- Monaco Editor Script -->
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
   <script>
-    // Initialize the Monaco editor
+    // Initialize Monaco editor for the code editor and terminal.
     let editor, terminalEditor;
     require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
     require(['vs/editor/editor.main'], function () {
@@ -370,7 +369,7 @@
         automaticLayout: true
       });
 
-      // Change the language of the editor when the user selects a new language
+      // Change language on selection update.
       document.getElementById('languageSelect').addEventListener('change', function () {
         const selectedLanguage = this.value;
         monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage);
@@ -378,7 +377,7 @@
     });
 
     function runCode() {
-      // Placeholder function for running code.
+      // Placeholder function for executing code.
       terminalEditor.setValue("// Running code...\n// (This is a placeholder response)");
     }
   </script>

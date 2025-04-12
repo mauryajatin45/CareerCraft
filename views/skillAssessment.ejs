@@ -95,26 +95,27 @@
   <script>
     // Example suggestion arrays – replace these with your own
     const languageOptions = ["Python", "JavaScript", "Java", "C", "C++", "C#", "Go", "Rust", "Ruby", "PHP"];
-    const toolOptions = ["Git", "GitHub", "VS Code", "Docker", "Jenkins", "VS Code", "Figma", "Slack", "Postman"];
-
+    const toolOptions = ["Git", "GitHub", "VS Code", "Docker", "Jenkins", "Figma", "Slack", "Postman"];
+  
+    // Set up autocomplete behavior
     function setupAutocomplete(inputId, suggestionBoxId, options) {
       const input = document.getElementById(inputId);
       const suggestionBox = document.getElementById(suggestionBoxId);
-
+  
       input.addEventListener("input", () => {
         const value = input.value;
         const terms = value.split(/,\s*/);
         const lastTerm = terms[terms.length - 1].toLowerCase();
-
+  
         // Clear suggestions
         suggestionBox.innerHTML = "";
-
+  
         if (!lastTerm) return;
-
+  
         const filtered = options.filter(option =>
           option.toLowerCase().startsWith(lastTerm)
         );
-
+  
         filtered.forEach(item => {
           const div = document.createElement("div");
           div.className = "suggestion-item";
@@ -127,65 +128,25 @@
           suggestionBox.appendChild(div);
         });
       });
-
+  
       document.addEventListener("click", (e) => {
         if (!suggestionBox.contains(e.target) && e.target !== input) {
           suggestionBox.innerHTML = "";
         }
       });
     }
-
+  
     setupAutocomplete("languageInput", "languageSuggestions", languageOptions);
     setupAutocomplete("toolsInput", "toolsSuggestions", toolOptions);
-
-    // Handle form submission
-    const form = document.getElementById("skillAssessmentForm");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();  // Prevent form from reloading the page
-
-      const languages = document.getElementById("languageInput").value.split(",").map(item => item.trim());
-      const tools = document.getElementById("toolsInput").value.split(",").map(item => item.trim());
-      const softSkills = document.getElementById("softSkillsSelect").value;
-
-      // Log data being sent
-      console.log("Languages: ", languages);
-      console.log("Tools: ", tools);
-      console.log("Soft Skills: ", softSkills);
-
-      // Send data to the server
-      try {
-        const response = await fetch('/update-skill-assessment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            languages,
-            tools,
-            softSkills
-          })
-        });
-
-        const result = await response.json();
-        if (result.success) {
-          alert("Profile updated successfully");
-          // After profile update, show the questions section
-          document.getElementById("questionsSection").style.display = "block";
-          loadNextQuestion(0); // Load first question
-        } else {
-          alert("Failed to update profile");
-        }
-      } catch (error) {
-        console.error("Error updating profile:", error);
-        alert("An error occurred while updating the profile");
-      }
-    });
-
+  
+    // Remove or disable the existing form submit event listener if it exists.
+    // Instead, the Proceed button click will handle submission and loading of questions.
+  
     // Variables for handling questions
     let currentQuestionIndex = 0;
     let questions = [];
-
-    // Fetch questions from the server
+  
+    // Function to fetch Gemini questions from the server
     async function loadQuestions() {
       try {
         const response = await fetch('/skill-assessment/gemini-questions');
@@ -195,13 +156,14 @@
         console.error("Error fetching questions:", error);
       }
     }
-
-    // Load a question by index
+  
+    // Load a question by index and update the DOM
     function loadNextQuestion(index) {
+      currentQuestionIndex = index;  // keep track of the current question index
       if (questions && questions.length > 0) {
         const question = questions[index];
         document.getElementById("questionContent").innerHTML = `<strong>Q${index + 1}:</strong> ${question.question}`;
-
+  
         const optionsContainer = document.getElementById("optionsContainer");
         optionsContainer.innerHTML = '';
         question.options.forEach((option, i) => {
@@ -213,30 +175,71 @@
           `;
           optionsContainer.insertAdjacentHTML('beforeend', optionHTML);
         });
-
+  
+        // Update navigation buttons
         const navigationButtons = document.getElementById("navigationButtons");
         navigationButtons.innerHTML = `
-          <button type="button" class="btn btn-secondary" onclick="loadPreviousQuestion()">Previous</button>
-          <button type="button" class="btn btn-primary" onclick="loadNextQuestion(${index + 1})">Next</button>
+          ${index > 0 ? '<button type="button" class="btn btn-secondary" onclick="loadNextQuestion(currentQuestionIndex - 1)">Previous</button>' : ''}
+          ${index < questions.length - 1 ? `<button type="button" class="btn btn-primary" onclick="loadNextQuestion(currentQuestionIndex + 1)">Next</button>` : '<button type="submit" class="btn btn-success" id="submitBtn">Submit</button>'}
         `;
-        if (index === questions.length - 1) {
-          navigationButtons.innerHTML += `
-            <button type="submit" class="btn btn-success" id="submitBtn">Submit</button>
-          `;
-        }
       }
     }
-
-    function loadPreviousQuestion() {
-      if (currentQuestionIndex > 0) {
-        loadNextQuestion(currentQuestionIndex - 1);
-      }
-    }
-
-    // Event listener for "Proceed" button click
+  
+    // Event listener for the "Proceed" button click
     document.getElementById('proceedButton').addEventListener('click', async () => {
-      await loadQuestions();
-      loadNextQuestion(0); // Load the first question
+      // Gather data from the form fields:
+      // Split comma-separated values and remove extra whitespace & empty values.
+      const languages = document.getElementById("languageInput").value
+                            .split(",")
+                            .map(item => item.trim())
+                            .filter(item => item);
+      const tools = document.getElementById("toolsInput").value
+                        .split(",")
+                        .map(item => item.trim())
+                        .filter(item => item);
+  
+      // For soft skills, convert the selected value into an array
+      const softSkillValue = document.getElementById("softSkillsSelect").value;
+      // Check if a valid skill is chosen (assuming the first option is a placeholder)
+      const softSkills = (softSkillValue && softSkillValue !== "Select a soft skill...") ? [softSkillValue] : [];
+  
+      // Log the data for debugging purposes
+      console.log("Languages: ", languages);
+      console.log("Tools: ", tools);
+      console.log("Soft Skills: ", softSkills);
+  
+      try {
+        // Send data to the server (expects arrays of strings)
+        const response = await fetch('/update-skill-assessment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ languages, tools, softSkills })
+        });
+  
+        // In our updated back end, if successful it may redirect...
+        if (response.redirected) {
+          window.location.href = response.url;
+          return;
+        }
+  
+        // Otherwise, process the JSON response
+        const result = await response.json();
+        if (result.success) {
+          // Optionally notify the user; update the UI to show the questions section.
+          alert("Profile updated successfully");
+          // Show the Gemini questions section (make sure the element exists and is initially hidden)
+          document.getElementById("questionsSection").style.display = "block";
+          // Load questions and display the first question
+          await loadQuestions();
+          loadNextQuestion(0);
+        } else {
+          alert("Failed to update profile: " + result.message);
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("An error occurred while updating the profile");
+      }
     });
   </script>
+  
 </body>
