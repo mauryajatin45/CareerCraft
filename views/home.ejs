@@ -1,78 +1,176 @@
 <%- layout('layouts/boilerplate') %>
 
-<head>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
+<!-- Include Animate.css via CDN or host locally -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<!-- Custom CSS for additional styling and animations -->
+<style>
+  /* Hero Section Improvements */
+  .hero-section {
+    position: relative;
+    background: url('/images/hero-bg.jpg') center center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%);
+    z-index: 1;
+  }
+  .hero-section .container {
+    position: relative;
+    z-index: 2;
+  }
+  .hero-section h1,
+  .hero-section p {
+    color: #fff;
+  }
+
+  /* Button Hover Transition */
+  .btn-primary {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  .btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  /* Cards and Icon Animations */
+  .features-section i,
+  .how-it-works i {
+    transition: transform 0.3s ease;
+  }
+  .features-section i:hover,
+  .how-it-works i:hover {
+    transform: scale(1.1);
+  }
+
+  /* Smooth fade in for sections */
+  .fadeInUp {
+    animation: fadeInUp 1s ease both;
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
-
-    /* Background Image Styling */
-    .bg-img {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      z-index: -1;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
+  }
+</style>
 
-    .bg-img img {
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-    }
-
-    /* Main Container Styling */
-    .main-content {
-      position: relative;
-      z-index: 10; /* Ensures it's above the image */
-    }
-
-    .fst-italic {
-      color: rgb(249, 240, 255);
-    }
-
-    .text-red {
-      color: red;
-    }
-
-    h1.display-5 {
-      font-size: 3rem;
-    }
-
-    .btn-rounded {
-      border-radius: 50px;
-    }
-  </style>
-</head>
-
-<body class="bg-dark text-light">
-
-  <!-- Background Image -->
-  <div class="bg-img">
-    <img src="images/home-bg.jpg" alt="Background">
+<!-- Hero Section -->
+<section class="hero-section text-center py-5 animate__animated animate__fadeInDown">
+  <div class="container">
+    <h1 class="display-4 fw-bold">Navigate Your Career Future with AI</h1>
+    <p class="lead">Discover personalized career paths, master job market trends, and unlock your full potential.</p>
+    <a href="/get-started" class="btn btn-primary btn-lg mt-3">Get Started</a>
   </div>
+</section>
 
-  <!-- Foreground Content -->
-  <div class="container-fluid main-content d-flex flex-column justify-content-center align-items-center text-center min-vh-100">
-
-    <main class="px-3">
-      <h1 class="display-5 fw-bold text-danger mb-3">
-        Your Skills. Your Goals.<br>
-        <span class="text-red">Your Intelligent Career Path.</span>
-      </h1>
-      <p class="fst-italic text-white mb-4">
-        “Discover job roles that align with your unique skills and interests.”
-      </p>
-      <button class="btn btn-danger btn-lg btn-rounded px-4">
-        Start Your Smart Career Journey
-      </button>
-    </main>
-
+<!-- Features Section -->
+<section class="features-section py-5">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="p-3">
+          <i class="fa-solid fa-chart-line fa-3x mb-3 text-primary"></i>
+          <h5 class="fw-bold">Skills Assessment</h5>
+          <p>Evaluate your abilities with our advanced AI tools.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+        <div class="p-3">
+          <i class="fa-solid fa-briefcase fa-3x mb-3 text-primary"></i>
+          <h5 class="fw-bold">Job Market Analysis</h5>
+          <p>Get the latest insights into the current job market.</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+        <div class="p-3">
+          <i class="fa-solid fa-file-lines fa-3x mb-3 text-primary"></i>
+          <h5 class="fw-bold">Resume & Interview Tips</h5>
+          <p>Access expert advice to help you stand out in any crowd.</p>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+<!-- How It Works Section -->
+<section class="how-it-works py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5 animate__animated animate__fadeInDown">
+      <h2 class="fw-bold">How It Works</h2>
+      <p class="lead">Follow these simple steps to kickstart your career journey.</p>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+        <div class="p-4">
+          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+               style="width: 50px; height: 50px; font-size: 1.25rem;">1</div>
+          <h5 class="fw-bold">Assessment</h5>
+          <p>Start with a quick skill assessment.</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+        <div class="p-4">
+          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+               style="width: 50px; height: 50px; font-size: 1.25rem;">2</div>
+          <h5 class="fw-bold">Market Analysis</h5>
+          <p>Gain insights from current job market data.</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+        <div class="p-4">
+          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+               style="width: 50px; height: 50px; font-size: 1.25rem;">3</div>
+          <h5 class="fw-bold">Personalized Tips</h5>
+          <p>Receive custom resume and interview advice.</p>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
+        <div class="p-4">
+          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+               style="width: 50px; height: 50px; font-size: 1.25rem;">4</div>
+          <h5 class="fw-bold">Network Enhancement</h5>
+          <p>Leverage insights to expand your professional network.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials py-5">
+  <div class="container">
+    <div class="text-center mb-5 animate__animated animate__fadeInDown">
+      <h2 class="fw-bold">What Our Users Say</h2>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+        <div class="card p-4 shadow-sm border-0">
+          <div class="card-body">
+            <p class="card-text">"This platform has revolutionized the way I approach my career."</p>
+            <h6 class="card-title text-end">- Alex</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
+        <div class="card p-4 shadow-sm border-0">
+          <div class="card-body">
+            <p class="card-text">"The insights I gained here truly set me apart in a competitive market."</p>
+            <h6 class="card-title text-end">- Jamie</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

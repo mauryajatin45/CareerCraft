@@ -132,4 +132,4 @@ router.post('/resume-interview', upload.single('resume'), async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = {router};

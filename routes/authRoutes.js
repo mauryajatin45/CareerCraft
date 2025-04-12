@@ -75,4 +75,4 @@ router.get('/profile', isAuthenticated, (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = {router};

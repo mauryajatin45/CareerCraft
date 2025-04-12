@@ -13,11 +13,11 @@ require('dotenv').config(); // 🔥 Load environment variables from .env
 const Resume = require('./models/Resume'); // Assuming you have a Resume model
 
 // Import routes and passport strategy
-const authRoutes = require('./routes/authRoutes');
+const {router: authRoutes} = require('./routes/authRoutes');
 const { router: skillAssessmentRouter } = require('./routes/skillAssessment');
 const { router: careerSuggestion } = require('./routes/carrer-suggestions'); 
-const temp = require('./routes/temp');
-const resumeRoutes = require('./routes/resume-interview'); // Assuming you have a resume-interview route
+const { router: jobMarketRouter } = require('./routes/job-market');
+const {router: resumeRoutes} = require('./routes/resume-interview');
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
@@ -99,7 +99,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// This goes before all your routes
+// Set current user for views
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
@@ -109,10 +109,13 @@ app.use(express.json());
 
 // Routes
 app.use("/", authRoutes);
-app.use("/", skillAssessmentRouter); // Use the correct router
+app.use("/", skillAssessmentRouter); 
+app.use("/", careerSuggestion);
+app.use("/", jobMarketRouter);
+app.use("/", resumeRoutes);
 
 // 404 Handler
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).render('404.ejs');
 });
 

@@ -5,162 +5,188 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Profile</title>
 
-  <!-- Link to Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
+    /* Global Styles */
     body {
+      background: #fff;
       font-family: 'Arial', sans-serif;
-      background-color: #f8f9fa;
       color: #333;
-    }
-    .profile-container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      flex-direction: column;
-      margin-top: 40px;
-      margin-bottom: 40px;
-      margin-left: 20% ;
-    }
-    .profile-card {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
-      width: 80%;
-      max-width: 900px;
-    }
-    .profile-header {
-      background-color: #007bff;
-      color: white;
-      padding: 30px;
-      text-align: center;
-    }
-    .profile-header img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin-top: 10px;
-    }
-    .profile-body {
-      padding: 30px;
-    }
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 10px;
-    }
-    .profile-info {
-      margin-bottom: 20px;
-    }
-    .profile-info p {
-      font-size: 1rem;
-      color: #555;
-    }
-    .profile-info ul {
-      list-style-type: none;
+      margin: 0;
       padding: 0;
     }
-    .profile-info li {
-      background-color: #f1f1f1;
-      padding: 8px 15px;
-      margin: 5px 0;
-      border-radius: 5px;
+    a {
+      text-decoration: none;
     }
-    .button-container {
+
+    /* Profile Header in Black & White */
+    .profile-header {
+      background: #000;
+      color: #fff;
+      padding: 50px 0;
       text-align: center;
-      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
     }
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-      padding: 10px 20px;
-      border-radius: 50px;
-      font-size: 1.1rem;
+    .profile-header img {
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      margin-bottom: 15px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Card Container */
+    .profile-card {
+      margin-top: -60px; /* Overlap header for a modern look */
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      overflow: hidden;
+      padding: 30px;
+    }
+    
+    /* Section Titles */
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #000;
+      border-bottom: 2px solid #000;
+      display: inline-block;
+      padding-bottom: 3px;
+    }
+
+    /* Profile Info and Card Layout */
+    .profile-info ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .profile-info li {
+      background-color: #f2f2f2;
+      border-radius: 5px;
+      padding: 10px 15px;
+      margin: 8px 0;
+    }
+    
+    /* Cards for Preferred Items */
+    .card {
+      border: none;
+      border-radius: 10px;
+      transition: transform 0.2s ease-in-out;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .card-title {
+      color: #000;
+    }
+    .card-text span {
+      color: #555;
+    }
+    
+    /* Edit Profile Button */
+    .btn-edit-profile {
+      background-color: #000;
+      border: none;
+      border-radius: 30px;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      transition: background-color 0.2s ease-in-out;
+    }
+    .btn-edit-profile:hover {
+      background-color: #333;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 576px) {
+      .profile-card {
+        margin-top: -40px;
+        padding: 20px;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <img src="images/Logo.png" alt="Profile Picture" />
+    <h2 class="fw-bold"><%= user.name %></h2>
+    <p class="lead"><%= user.username %></p>
+  </div>
 
-<div class="container profile-container">
-  <!-- Profile Card -->
-  <div class="profile-card">
-    <!-- Profile Header (Image and Name) -->
-    <div class="profile-header">
-      <img src="images/Logo.png" alt="User Profile Picture">
-      <h2><%= user.name %></h2>
-      <p class="lead"><%= user.username %></p>
-    </div>
+  <!-- Main Profile Card Container -->
+  <div class="container">
+    <div class="profile-card mx-auto mt-4" style="max-width: 800px;">
 
-    <!-- Profile Body -->
-    <div class="profile-body">
       <!-- Name Section -->
-      <div class="profile-info">
-        <h3 class="section-title">Name:</h3>
+      <div class="profile-info mb-4">
+        <h3 class="section-title">Name</h3>
         <p><%= user.name %></p>
       </div>
 
       <!-- Email Section -->
-      <div class="profile-info">
-        <h3 class="section-title">Email:</h3>
+      <div class="profile-info mb-4">
+        <h3 class="section-title">Email</h3>
         <p><%= user.username %></p>
       </div>
 
       <!-- Preferred Programming Languages -->
-      <div class="profile-info">
-        <h3 class="section-title">Preferred Programming Languages:</h3>
+      <div class="profile-info mb-4">
+        <h3 class="section-title">Preferred Programming Languages</h3>
         <% if (user.programmingLanguages && user.programmingLanguages.length > 0) { %>
-          <ul>
+          <div class="row row-cols-1 row-cols-md-2 g-3">
             <% user.programmingLanguages.forEach(language => { %>
-              <li><%= language %></li>
+              <div class="col">
+                <div class="card h-100 shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= language.name %></h5>
+                    <p class="card-text">Skill Level: <span class="fw-bold"><%= language.level %></span></p>
+                  </div>
+                </div>
+              </div>
             <% }) %>
-          </ul>
+          </div>
         <% } else { %>
           <p>Complete your profile to see your preferred programming languages</p>
         <% } %>
       </div>
 
       <!-- Preferred Tools/Software -->
-      <div class="profile-info">
-        <h3 class="section-title">Preferred Tools/Software:</h3>
+      <div class="profile-info mb-4">
+        <h3 class="section-title">Preferred Tools/Software</h3>
         <% if (user.toolsSoftware && user.toolsSoftware.length > 0) { %>
-          <ul>
+          <div class="row row-cols-1 row-cols-md-2 g-3">
             <% user.toolsSoftware.forEach(tool => { %>
-              <li><%= tool %></li>
+              <div class="col">
+                <div class="card h-100 shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= tool.name %></h5>
+                    <p class="card-text">Proficiency: <span class="fw-bold"><%= tool.level %></span></p>
+                  </div>
+                </div>
+              </div>
             <% }) %>
-          </ul>
+          </div>
         <% } else { %>
           <p>Complete your profile to see your preferred tools and software</p>
         <% } %>
       </div>
 
-      <!-- Soft Skills Section -->
-      <div class="profile-info">
-        <h3 class="section-title">Soft Skills:</h3>
-        <% if (user.softSkills && user.softSkills.length > 0) { %>
-          <ul>
-            <% user.softSkills.forEach(skill => { %>
-              <li><%= skill %></li>
-            <% }) %>
-          </ul>
-        <% } else { %>
-          <p>Complete your profile to see your soft skills</p>
-        <% } %>
-      </div>
-
-      <!-- Button to Edit Profile -->
-      <div class="button-container">
-        <a href="/edit-profile" class="btn btn-primary">Edit Profile</a>
+      <!-- Edit Profile Button -->
+      <div class="text-center">
+        <a href="/edit-profile" class="btn btn-edit-profile" style="color: white;">Edit Profile</a>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Bootstrap JS (optional but useful for certain interactions) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+  <!-- Bootstrap JS (for interactivity) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

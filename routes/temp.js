@@ -64,4 +64,4 @@ router.post("/run-code", (req, res) => {
     request.end();
 });
 
-module.exports = router;
+module.exports = {router};
