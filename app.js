@@ -15,11 +15,11 @@ const Resume = require('./models/Resume'); // Assuming you have a Resume model
 // Import routes and passport strategy
 const {router: authRoutes} = require('./routes/authRoutes');
 const { router: skillAssessmentRouter } = require('./routes/skillAssessment');
-const { router: careerSuggestion } = require('./routes/carrer-suggestions'); 
 const { router: jobMarketRouter } = require('./routes/job-market');
 const {router: resumeRoutes} = require('./routes/resume-interview');
-const { router: interviewPrepRouter } = require('./routes/interview-prep'); // Assuming you have this route
-const { router: networkRoutes } = require('./routes/network'); // Assuming you have this route
+const { router: interviewPrepRouter } = require('./routes/interview-prep');
+const { router: networkRoutes } = require('./routes/network'); 
+const { router: careerSuggestion  } = require('./routes/carrer-suggestions'); 
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
