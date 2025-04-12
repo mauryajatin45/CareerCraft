@@ -18,6 +18,7 @@ const { router: skillAssessmentRouter } = require('./routes/skillAssessment');
 const { router: careerSuggestion } = require('./routes/carrer-suggestions'); 
 const { router: jobMarketRouter } = require('./routes/job-market');
 const {router: resumeRoutes} = require('./routes/resume-interview');
+const { router: interviewPrepRouter } = require('./routes/interview-prep'); // Assuming you have this route
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
@@ -113,6 +114,7 @@ app.use("/", skillAssessmentRouter);
 app.use("/", careerSuggestion);
 app.use("/", jobMarketRouter);
 app.use("/", resumeRoutes);
+app.use("/", interviewPrepRouter);
 
 // 404 Handler
 app.use((req, res) => {
