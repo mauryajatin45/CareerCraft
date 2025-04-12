@@ -1,0 +1,107 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container my-4">
+  <h2 class="text-center mb-4">Performance Summary</h2>
+  
+  <div class="row">
+    <!-- Left Side: Q&A -->
+    <div class="col-md-6">
+      <% insights.forEach((item, i) => { %>
+        <div class="card shadow-sm mb-3">
+          <div class="card-body">
+            <h5>Question <%= i + 1 %></h5>
+            <p><strong>Q:</strong> <%= item.question %></p>
+            <p><strong>Your Answer:</strong> <%= item.yourAnswer %></p>
+            <p><strong>Correct Answer:</strong> <%= item.answer %></p>
+            <span class="badge bg-<%= item.isCorrect ? 'success' : 'danger' %>">
+              <%= item.isCorrect ? 'Correct' : 'Incorrect' %>
+            </span>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- Right Side: Charts -->
+    <div class="col-md-6">
+      <h5 class="text-center">Overall Score</h5>
+      <canvas id="performancePieChart" class="mb-4" height="200"></canvas>
+
+      <h5 class="text-center">Skill Breakdown</h5>
+      <canvas id="skillsBarChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const chartData = <%- JSON.stringify(chartData) %>;
+
+  // Pie Chart for Correct vs Incorrect
+  new Chart(document.getElementById('performancePieChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Correct', 'Incorrect'],
+      datasets: [{
+        data: [chartData.correct, chartData.incorrect],
+        backgroundColor: ['rgba(40, 167, 69, 0.7)', 'rgba(220, 53, 69, 0.7)'],
+        borderColor: ['#28a745', '#dc3545'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        title: {
+          display: true,
+          text: 'Correct vs Incorrect'
+        }
+      }
+    }
+  });
+
+  // Bar Chart for Skills (example dummy data)
+  const skills = {
+    "Programming": 80,
+    "Tools/Software": 60,
+    "Soft Skills": 70
+  };
+
+  new Chart(document.getElementById('skillsBarChart'), {
+    type: 'bar',
+    data: {
+      labels: Object.keys(skills),
+      datasets: [{
+        label: 'Skill Proficiency (%)',
+        data: Object.values(skills),
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 206, 86, 0.7)',
+          'rgba(153, 102, 255, 0.7)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(153, 102, 255, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Skill Breakdown'
+        }
+      },
+      scales: {
+        x: { beginAtZero: true, max: 100 }
+      }
+    }
+  });
+</script>

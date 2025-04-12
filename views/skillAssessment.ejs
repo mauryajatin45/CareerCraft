@@ -26,10 +26,22 @@
     .autocomplete-wrapper {
       position: relative;
     }
+
+    .question-box {
+      background-color: #ffffff;
+      color: #000;
+      border-radius: 15px;
+      padding: 15px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
-<body>
 
+<body>
   <!-- Main Section -->
   <div class="container mt-5">
     <h3 class="text-center mb-4">Skill Assessment !!!</h3>
@@ -65,40 +77,25 @@
 
         <!-- Proceed Button -->
         <div class="text-center">
-          <button type="submit" class="btn btn-primary">Proceed</button>
+          <button type="button" class="btn btn-primary" id="proceedButton">Proceed</button>
         </div>
       </form>
     </div>
 
+    <!-- MCQ Questions Section -->
+    <div id="questionsSection" style="display:none; margin-top: 20px;">
+      <div class="question-box">
+        <div id="questionContent"></div>
+        <div id="optionsContainer"></div>
+        <div id="navigationButtons" style="margin-top: 15px;"></div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Example suggestion arrays – replace these with your own
-    const languageOptions = [
-      "Python", "JavaScript", "Java", "C", "C++", "C#", "Go", "Rust", "Ruby", "PHP",
-      "TypeScript", "Swift", "Kotlin", "Perl", "Scala", "Objective-C", "R", "MATLAB",
-      "Dart", "Haskell", "Elixir", "Lua", "Visual Basic", "Assembly", "Fortran", "COBOL",
-      "F#", "Groovy", "Erlang", "Julia", "Shell", "SQL", "SAS", "VB.NET", "Ada", "Lisp",
-      "Prolog", "Scheme", "OCaml", "Crystal", "Bash", "PowerShell", "Delphi", "Hack",
-      "Nim", "Zig", "VHDL", "Verilog", "ABAP", "ActionScript", "Apex", "Awk", "Ballerina",
-      "Elm", "Factor", "Forth", "GAMS", "Idris", "Io", "J", "LabVIEW", "Mercury", "Modula-2",
-      "NATURAL", "Nimrod", "PL/I", "PL/SQL", "PostScript", "Racket", "REXX", "Smalltalk",
-      "SPARK", "Tcl", "Vala", "VimL", "Xojo", "Yorick"
-    ];
-
-    const toolOptions = [
-      "Git", "GitHub", "GitLab", "Bitbucket", "VS Code", "Visual Studio", "Eclipse",
-      "IntelliJ IDEA", "PyCharm", "NetBeans", "Xcode", "Android Studio", "Jupyter",
-      "Docker", "Kubernetes", "Postman", "Figma", "Slack", "Jira", "Trello", "Asana",
-      "CircleCI", "Travis CI", "Jenkins", "TeamCity", "Gradle", "Maven", "Ant", "Selenium",
-      "Cypress", "TestNG", "JUnit", "NUnit", "Mocha", "Chai", "Webpack", "Babel", "ESLint",
-      "Prettier", "SonarQube", "New Relic", "Datadog", "Splunk", "Nagios", "Prometheus",
-      "Grafana", "AWS", "Azure", "Google Cloud Platform", "Heroku", "Firebase", "DigitalOcean",
-      "Linode", "Vagrant", "Ansible", "Chef", "Puppet", "Terraform", "OpenShift", "Bitrise",
-      "Fastlane", "Appium", "Robot Framework", "Cucumber", "Swagger", "Kibana", "Logstash",
-      "ElasticSearch", "Tableau", "Power BI", "QlikView", "Looker", "DBeaver", "MySQL Workbench",
-      "pgAdmin", "MongoDB Compass", "RStudio", "Spyder", "Atom", "Sublime Text", "Notepad++",
-      "Emacs", "Vim", "Code::Blocks", "BlueJ", "DrJava", "JDeveloper", "Qt Creator", "RubyMine",
-      "CLion", "WebStorm", "PhpStorm", "DataGrip", "Rider", "AppCode", "Komodo IDE", "Zend Studio"
-    ];
+    const languageOptions = ["Python", "JavaScript", "Java", "C", "C++", "C#", "Go", "Rust", "Ruby", "PHP"];
+    const toolOptions = ["Git", "GitHub", "VS Code", "Docker", "Jenkins", "VS Code", "Figma", "Slack", "Postman"];
 
     function setupAutocomplete(inputId, suggestionBoxId, options) {
       const input = document.getElementById(inputId);
@@ -142,45 +139,104 @@
     setupAutocomplete("toolsInput", "toolsSuggestions", toolOptions);
 
     // Handle form submission
-    // Handle form submission
-const form = document.getElementById("skillAssessmentForm");
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();  // Prevent form from reloading the page
+    const form = document.getElementById("skillAssessmentForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();  // Prevent form from reloading the page
 
-  const languages = document.getElementById("languageInput").value.split(",").map(item => item.trim());
-  const tools = document.getElementById("toolsInput").value.split(",").map(item => item.trim());
-  const softSkills = document.getElementById("softSkillsSelect").value;
+      const languages = document.getElementById("languageInput").value.split(",").map(item => item.trim());
+      const tools = document.getElementById("toolsInput").value.split(",").map(item => item.trim());
+      const softSkills = document.getElementById("softSkillsSelect").value;
 
-  // Log data being sent
-  console.log("Languages: ", languages);
-  console.log("Tools: ", tools);
-  console.log("Soft Skills: ", softSkills);
+      // Log data being sent
+      console.log("Languages: ", languages);
+      console.log("Tools: ", tools);
+      console.log("Soft Skills: ", softSkills);
 
-  // Send data to the server
-  try {
-    const response = await fetch('/update-skill-assessment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        languages,
-        tools,
-        softSkills
-      })
+      // Send data to the server
+      try {
+        const response = await fetch('/update-skill-assessment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            languages,
+            tools,
+            softSkills
+          })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert("Profile updated successfully");
+          // After profile update, show the questions section
+          document.getElementById("questionsSection").style.display = "block";
+          loadNextQuestion(0); // Load first question
+        } else {
+          alert("Failed to update profile");
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("An error occurred while updating the profile");
+      }
     });
 
-    const result = await response.json();
-    if (result.success) {
-      alert("Profile updated successfully");
-    } else {
-      alert("Failed to update profile");
-    }
-  } catch (error) {
-    console.error("Error updating profile:", error);
-    alert("An error occurred while updating the profile");
-  }
-});
+    // Variables for handling questions
+    let currentQuestionIndex = 0;
+    let questions = [];
 
+    // Fetch questions from the server
+    async function loadQuestions() {
+      try {
+        const response = await fetch('/skill-assessment/gemini-questions');
+        const data = await response.json();
+        questions = data.questions;
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    }
+
+    // Load a question by index
+    function loadNextQuestion(index) {
+      if (questions && questions.length > 0) {
+        const question = questions[index];
+        document.getElementById("questionContent").innerHTML = `<strong>Q${index + 1}:</strong> ${question.question}`;
+
+        const optionsContainer = document.getElementById("optionsContainer");
+        optionsContainer.innerHTML = '';
+        question.options.forEach((option, i) => {
+          const optionHTML = `
+            <div class="form-check">
+              <input type="radio" class="form-check-input" name="answer" value="${option.option}" id="q${index}o${i}">
+              <label class="form-check-label" for="q${index}o${i}">${option.option}</label>
+            </div>
+          `;
+          optionsContainer.insertAdjacentHTML('beforeend', optionHTML);
+        });
+
+        const navigationButtons = document.getElementById("navigationButtons");
+        navigationButtons.innerHTML = `
+          <button type="button" class="btn btn-secondary" onclick="loadPreviousQuestion()">Previous</button>
+          <button type="button" class="btn btn-primary" onclick="loadNextQuestion(${index + 1})">Next</button>
+        `;
+        if (index === questions.length - 1) {
+          navigationButtons.innerHTML += `
+            <button type="submit" class="btn btn-success" id="submitBtn">Submit</button>
+          `;
+        }
+      }
+    }
+
+    function loadPreviousQuestion() {
+      if (currentQuestionIndex > 0) {
+        loadNextQuestion(currentQuestionIndex - 1);
+      }
+    }
+
+    // Event listener for "Proceed" button click
+    document.getElementById('proceedButton').addEventListener('click', async () => {
+      await loadQuestions();
+      loadNextQuestion(0); // Load the first question
+    });
   </script>
 </body>

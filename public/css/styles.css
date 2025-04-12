@@ -18,10 +18,9 @@
 }
 
 .container{
-    width: 100vw !important;
+    width: 90vw !important;
     padding: 0 !important;
-    margin: 0 !important;
-    /* margin: auto; */
+    margin: auto;
 }
 .topContainer{
     display: flex;

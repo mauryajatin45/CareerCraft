@@ -1,0 +1,385 @@
+<%- layout('layouts/boilerplate') %>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Assessment</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Styling for background, question box, editor, and terminal */
+    body {
+      background-color: #1e1e1e;
+      color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-container {
+      height: 95vh;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .question-box {
+      background-color: #ffffff;
+      color: #000;
+      border-radius: 15px;
+      padding: 15px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .question-header {
+      background-color: #007bff;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 20px;
+      padding: 12px;
+      text-align: center;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .form-check-label {
+      color: #000;
+    }
+
+    .editor-section {
+      background-color: #1e1e1e;
+      color: #fff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .editor-card {
+      background-color: #2a2d2e;
+      padding: 15px;
+      border-radius: 10px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .form-select {
+      width: 180px;
+      font-size: 0.9rem;
+    }
+
+    .run-button {
+      background-color: #007bff;
+      color: white;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .run-button:hover {
+      background-color: #0056b3;
+    }
+
+    .monaco-editor-container {
+      height: 250px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .terminal {
+      margin-top: 15px;
+      background-color: #343a40;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid #555;
+      height: 250px;
+      overflow-y: auto;
+    }
+
+    /* Scrollbar Styling */
+    .terminal::-webkit-scrollbar,
+    .monaco-editor-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .terminal::-webkit-scrollbar-track,
+    .monaco-editor-container::-webkit-scrollbar-track {
+      background: #2a2d2e;
+    }
+
+    .terminal::-webkit-scrollbar-thumb,
+    .monaco-editor-container::-webkit-scrollbar-thumb {
+      background-color: #5a5a5a;
+      border-radius: 4px;
+      border: 2px solid #2a2d2e;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .form-select {
+        width: 100%;
+      }
+
+      .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+    <!-- Left Panel for Questions -->
+    <div class="question-box">
+      <div class="mb-4">
+        <div id="questionHeader" class="question-header">Question <%= currentQuestionIndex + 1 %></div>
+        <div class="my-3">
+          <h5 id="questionText"><strong>Q:</strong> <%= questions[currentQuestionIndex].question %></h5>
+        </div>
+
+        <!-- Container for Options -->
+        <div id="optionsContainer">
+          <% if (questions[currentQuestionIndex].options && questions[currentQuestionIndex].options.length > 0) { %>
+            <% questions[currentQuestionIndex].options.forEach((option, optIndex) => { %>
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="radio" name="answer" value="<%= option.option %>" id="q<%= currentQuestionIndex %>o<%= optIndex %>">
+                <label class="form-check-label" for="q<%= currentQuestionIndex %>o<%= optIndex %>">
+                  <%= option.option %>
+                </label>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p>No options available for this question.</p>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div id="navButtons" class="controls-row">
+        <% if (currentQuestionIndex > 0) { %>
+          <button id="prevBtn" class="btn btn-secondary">Previous</button>
+        <% } else { %>
+          <button id="prevBtn" class="btn btn-secondary" disabled>Previous</button>
+        <% } %>
+        
+        <% if (currentQuestionIndex + 1 < questions.length) { %>
+          <button id="nextBtn" class="btn btn-primary">Next</button>
+        <% } else { %>
+          <button id="submitBtn" class="btn btn-success">Submit</button>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Right Panel for Code Editor and Terminal -->
+    <div class="editor-section">
+      <div class="editor-card">
+        <div class="controls-row">
+          <!-- Language Selector -->
+          <select id="languageSelect" class="form-select">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="c">C</option>
+            <option value="java">Java</option>
+          </select>
+          <button class="run-button" onclick="runCode()">Run</button>
+        </div>
+        <div id="editor" class="monaco-editor-container"></div>
+      </div>
+      <div class="terminal mt-3">
+        <h6>Terminal</h6>
+        <div id="terminal" class="monaco-editor-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Embed all MCQs so navigation is client-side -->
+  <script>
+    const mcqs = <%- JSON.stringify(userMCQs) %>;
+    // Default to 0 if currentQuestionIndex is not provided
+    let currentQuestionIndex = typeof <%= currentQuestionIndex %> !== 'undefined' ? <%= currentQuestionIndex %> : 0;
+    
+    // Object to store the user's selected answers.
+    // The keys correspond to the question index, and the value is the selected answer (string).
+    let userAnswers = {};
+  
+    /**
+     * Update the question header, text, options, and navigation buttons.
+     */
+    function updateQuestionDisplay() {
+      // Update question header text
+      const headerEl = document.getElementById('questionHeader');
+      headerEl.innerText = 'Question ' + (currentQuestionIndex + 1);
+  
+      // Update question text
+      const questionTextEl = document.getElementById('questionText');
+      questionTextEl.innerHTML = `<strong>Q:</strong> ${mcqs[currentQuestionIndex].question}`;
+  
+      // Build options HTML
+      const optionsContainer = document.getElementById('optionsContainer');
+      let optionsHTML = '';
+      if(mcqs[currentQuestionIndex].options && mcqs[currentQuestionIndex].options.length > 0) {
+        mcqs[currentQuestionIndex].options.forEach((option, index) => {
+          // Check if user had previously answered this question
+          const checked = userAnswers[currentQuestionIndex] === option.option ? 'checked' : '';
+          optionsHTML += `
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="radio" name="answer" value="${option.option}" id="q${currentQuestionIndex}o${index}" ${checked}>
+            <label class="form-check-label" for="q${currentQuestionIndex}o${index}">
+              ${option.option}
+            </label>
+          </div>
+          `;
+        });
+      } else {
+        optionsHTML = '<p>No options available for this question.</p>';
+      }
+      optionsContainer.innerHTML = optionsHTML;
+  
+      // Assign event listeners for the radio buttons to capture user's selection.
+      const radioButtons = document.querySelectorAll('input[name="answer"]');
+      radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+          userAnswers[currentQuestionIndex] = this.value;
+        });
+      });
+  
+      // Update navigation buttons
+      const navButtonsContainer = document.getElementById('navButtons');
+      let navHTML = '';
+  
+      if (currentQuestionIndex > 0) {
+        navHTML += `<button id="prevBtn" class="btn btn-secondary">Previous</button>`;
+      } else {
+        navHTML += `<button id="prevBtn" class="btn btn-secondary" disabled>Previous</button>`;
+      }
+  
+      if (currentQuestionIndex < mcqs.length - 1) {
+        navHTML += `<button id="nextBtn" class="btn btn-primary">Next</button>`;
+      } else {
+        navHTML += `<button id="submitBtn" class="btn btn-success">Submit</button>`;
+      }
+      navButtonsContainer.innerHTML = navHTML;
+  
+      // Reassign event listeners for navigation buttons
+      assignNavButtonListeners();
+    }
+  
+    /**
+     * Assign event listeners to the navigation buttons.
+     */
+    function assignNavButtonListeners() {
+      const prevBtn = document.getElementById('prevBtn');
+      if (prevBtn && !prevBtn.disabled) {
+        prevBtn.addEventListener('click', () => {
+          if(currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            updateQuestionDisplay();
+          }
+        });
+      }
+      const nextBtn = document.getElementById('nextBtn');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if(currentQuestionIndex < mcqs.length - 1) {
+            currentQuestionIndex++;
+            updateQuestionDisplay();
+          }
+        });
+      }
+      const submitBtn = document.getElementById('submitBtn');
+      if (submitBtn) {
+        submitBtn.addEventListener('click', submitAnswers);
+      }
+    }
+  
+    /**
+     * Gather the user's answers and submit them via a POST request.
+     */
+    function submitAnswers() {
+      // Construct an array of answer objects from the mcqs and userAnswers.
+      const answersToSubmit = mcqs.map((mcq, index) => ({
+        mcqId: mcq._id,
+        yourAnswer: userAnswers[index] || null
+      }));
+  
+      // POST the answers to the server
+      fetch('/skill-assessment/gemini-questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ answers: answersToSubmit })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.success) {
+          alert('Submission successful!');
+          // Redirect the user to the performance page
+          window.location.href = data.redirectUrl;
+        } else {
+          alert('Submission failed. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting answers:', error);
+        alert('Error submitting answers.');
+      });
+    }
+  
+    // Trigger update on initial page load.
+    updateQuestionDisplay();
+  </script>
+  
+
+  <!-- Monaco Editor Script -->
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    // Initialize the Monaco editor
+    let editor, terminalEditor;
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+      editor = monaco.editor.create(document.getElementById('editor'), {
+        value: "// Write your code here\n",
+        language: 'javascript',
+        theme: 'vs-dark',
+        automaticLayout: true
+      });
+
+      terminalEditor = monaco.editor.create(document.getElementById('terminal'), {
+        value: "// Output will be shown here\n",
+        language: 'plaintext',
+        theme: 'vs-dark',
+        readOnly: true,
+        automaticLayout: true
+      });
+
+      // Change the language of the editor when the user selects a new language
+      document.getElementById('languageSelect').addEventListener('change', function () {
+        const selectedLanguage = this.value;
+        monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage);
+      });
+    });
+
+    function runCode() {
+      // Placeholder function for running code.
+      terminalEditor.setValue("// Running code...\n// (This is a placeholder response)");
+    }
+  </script>
+</body>

@@ -1,1 +1,15 @@
 <%- layout('layouts/boilerplate') %>
+
+<body>
+
+<h1>Career Suggestions</h1>
+<div>
+  <h2>Based on your skills and assessment, we suggest the following careers:</h2>
+  <ul>
+    <% suggestions.forEach(function(suggestion) { %>
+      <li><%= suggestion %></li>
+    <% }) %>
+  </ul>
+</div>
+
+</body>
