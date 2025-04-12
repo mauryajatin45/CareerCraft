@@ -1,1 +1,61 @@
-<%- layout('layouts/boilerplate') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Market Results</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>Results for <%= jobTitle %> in <%= location %></h1>
+
+  <div>
+    <h2>Salary: $<%= data.salary %></h2>
+    <h3>Market Trend: <%= data.marketTrend %></h3>
+    <h3>Growth: <%= data.growth %> %</h3>
+    <h3>Hype: <%= data.hype %> / 10</h3>
+  </div>
+
+  <div>
+    <h2>Data Visualizations</h2>
+    <canvas id="salaryChart" width="400" height="200"></canvas>
+    <canvas id="trendChart" width="400" height="200"></canvas>
+  </div>
+
+  <script>
+    const salaryData = {
+      labels: ['Salary'],
+      datasets: [{
+        label: 'Salary',
+        data: [<%= data.salary %>],
+        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
+        borderColor: ['rgba(75, 192, 192, 1)'],
+        borderWidth: 1
+      }]
+    };
+
+    const trendData = {
+      labels: ['Market Trend', 'Growth', 'Hype'],
+      datasets: [{
+        label: 'Market Insights',
+        data: [<%= data.marketTrend %>, <%= data.growth %>, <%= data.hype %>],
+        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'],
+        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'],
+        borderWidth: 1
+      }]
+    };
+
+    const ctxSalary = document.getElementById('salaryChart').getContext('2d');
+    const salaryChart = new Chart(ctxSalary, {
+      type: 'bar',
+      data: salaryData,
+    });
+
+    const ctxTrend = document.getElementById('trendChart').getContext('2d');
+    const trendChart = new Chart(ctxTrend, {
+      type: 'pie',
+      data: trendData,
+    });
+  </script>
+</body>
+</html>
