@@ -1,113 +1,262 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- layout('layouts/boilerplate') %>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Profile</title>
+  <title>Jatin's Developer Profile</title>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
-    /* Global Styles */
-    body {
-      background: #fff;
-      font-family: 'Arial', sans-serif;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    a {
-      text-decoration: none;
-    }
-
-    /* Profile Header in Black & White */
-    .profile-header {
-      background: #000;
-      color: #fff;
-      padding: 50px 0;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .profile-header img {
-      width: 140px;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 3px solid #fff;
-      margin-bottom: 15px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Card Container */
-    .profile-card {
-      margin-top: -60px; /* Overlap header for a modern look */
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      background-color: #fff;
-      overflow: hidden;
-      padding: 30px;
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --light-bg: #f8f9fa;
+      --dark-text: #2b2d42;
+      --light-text: #8d99ae;
+      --white: #ffffff;
     }
     
-    /* Section Titles */
+    body {
+      background-color: #f5f7ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--dark-text);
+      line-height: 1.6;
+    }
+    
+    .profile-header {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .avatar-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ff4757;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid white;
+    transform: translate(10px, -10px);
+  }
+
+  .profile-name {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  .profile-email {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    font-size: 1.05rem;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+  }
+
+  .profile-email:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    .profile-name {
+      font-size: 1.8rem;
+    }
+    
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .avatar-badge {
+      width: 30px;
+      height: 30px;
+      font-size: 12px;
+    }
+  }
+    
+    /* Main Content */
+    .profile-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Profile Card */
+    .profile-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      top: -50px;
+    }
+    
+    /* Section Styles */
     .section-title {
       font-weight: 700;
-      margin-bottom: 10px;
-      color: #000;
-      border-bottom: 2px solid #000;
-      display: inline-block;
-      padding-bottom: 3px;
-    }
-
-    /* Profile Info and Card Layout */
-    .profile-info ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .profile-info li {
-      background-color: #f2f2f2;
-      border-radius: 5px;
-      padding: 10px 15px;
-      margin: 8px 0;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 0.5rem;
+      font-size: 1.5rem;
     }
     
-    /* Cards for Preferred Items */
-    .card {
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--accent-color);
+      border-radius: 3px;
+    }
+    
+    /* Skill Cards */
+    .skill-card {
       border: none;
       border-radius: 10px;
-      transition: transform 0.2s ease-in-out;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-    .card-title {
-      color: #000;
-    }
-    .card-text span {
-      color: #555;
+      background: var(--light-bg);
+      transition: all 0.3s ease;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
     }
     
-    /* Edit Profile Button */
-    .btn-edit-profile {
-      background-color: #000;
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(67, 97, 238, 0.1);
+    }
+    
+    .skill-card .card-body {
+      padding: 1.5rem;
+    }
+    
+    .skill-card .card-title {
+      font-weight: 600;
+      color: var(--dark-text);
+      margin-bottom: 0.75rem;
+    }
+    
+    .skill-level {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .level-beginner {
+      background-color: #e3f2fd;
+      color: #1976d2;
+    }
+    
+    .level-intermediate {
+      background-color: #e8f5e9;
+      color: #388e3c;
+    }
+    
+    .level-advanced {
+      background-color: #f3e5f5;
+      color: #8e24aa;
+    }
+    
+    /* Progress Bars */
+    .progress {
+      height: 8px;
+      border-radius: 4px;
+      background-color: #e9ecef;
+      margin-top: 0.5rem;
+    }
+    
+    .progress-bar {
+      background-color: var(--primary-color);
+    }
+    
+    /* Edit Button */
+    .btn-edit {
+      background-color: var(--primary-color);
+      color: white;
       border: none;
+      padding: 0.6rem 1.5rem;
       border-radius: 30px;
-      padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-      transition: background-color 0.2s ease-in-out;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
-    .btn-edit-profile:hover {
-      background-color: #333;
+    
+    .btn-edit:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
     }
-
+    
+    .btn-edit i {
+      margin-right: 8px;
+    }
+    
     /* Responsive Adjustments */
-    @media (max-width: 576px) {
+    @media (max-width: 768px) {
+      .profile-header {
+        padding: 3rem 0 5rem 0;
+      }
+      
       .profile-card {
-        margin-top: -40px;
-        padding: 20px;
+        padding: 1.5rem;
+      }
+      
+      .profile-name {
+        font-size: 1.8rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .profile-header {
+        padding: 2rem 0 4rem 0;
+      }
+      
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
       }
     }
   </style>
@@ -116,77 +265,127 @@
 <body>
   <!-- Profile Header -->
   <div class="profile-header">
-    <img src="images/Logo.png" alt="Profile Picture" />
-    <h2 class="fw-bold"><%= user.name %></h2>
-    <p class="lead"><%= user.username %></p>
-  </div>
-
-  <!-- Main Profile Card Container -->
-  <div class="container">
-    <div class="profile-card mx-auto mt-4" style="max-width: 800px;">
-
-      <!-- Name Section -->
-      <div class="profile-info mb-4">
-        <h3 class="section-title">Name</h3>
-        <p><%= user.name %></p>
+    <div class="container text-center">
+      <div class="avatar-container">
+        <img src="images/Logo.png" alt="Profile Picture" class="profile-avatar" />
+        <div class="avatar-badge">CC</div>
       </div>
-
-      <!-- Email Section -->
-      <div class="profile-info mb-4">
-        <h3 class="section-title">Email</h3>
-        <p><%= user.username %></p>
-      </div>
-
-      <!-- Preferred Programming Languages -->
-      <div class="profile-info mb-4">
-        <h3 class="section-title">Preferred Programming Languages</h3>
-        <% if (user.programmingLanguages && user.programmingLanguages.length > 0) { %>
-          <div class="row row-cols-1 row-cols-md-2 g-3">
-            <% user.programmingLanguages.forEach(language => { %>
-              <div class="col">
-                <div class="card h-100 shadow-sm">
-                  <div class="card-body">
-                    <h5 class="card-title"><%= language.name %></h5>
-                    <p class="card-text">Skill Level: <span class="fw-bold"><%= language.level %></span></p>
-                  </div>
-                </div>
-              </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <p>Complete your profile to see your preferred programming languages</p>
-        <% } %>
-      </div>
-
-      <!-- Preferred Tools/Software -->
-      <div class="profile-info mb-4">
-        <h3 class="section-title">Preferred Tools/Software</h3>
-        <% if (user.toolsSoftware && user.toolsSoftware.length > 0) { %>
-          <div class="row row-cols-1 row-cols-md-2 g-3">
-            <% user.toolsSoftware.forEach(tool => { %>
-              <div class="col">
-                <div class="card h-100 shadow-sm">
-                  <div class="card-body">
-                    <h5 class="card-title"><%= tool.name %></h5>
-                    <p class="card-text">Proficiency: <span class="fw-bold"><%= tool.level %></span></p>
-                  </div>
-                </div>
-              </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <p>Complete your profile to see your preferred tools and software</p>
-        <% } %>
-      </div>
-
-      <!-- Edit Profile Button -->
-      <div class="text-center">
-        <a href="/edit-profile" class="btn btn-edit-profile" style="color: white;">Edit Profile</a>
+      <h1 class="profile-name">Jatin Maurya</h1>
+      <div class="profile-email">
+        <i class="fas fa-envelope me-2"></i>jatin@gmail.com
       </div>
     </div>
   </div>
 
-  <!-- Bootstrap JS (for interactivity) -->
+  <!-- Main Profile Content -->
+  <div class="profile-container">
+    <div class="profile-card">
+      <!-- About Section -->
+      <div class="mb-5">
+        <h2 class="section-title">About Me</h2>
+        <p class="lead">Full-stack developer with expertise in JavaScript and React. Passionate about creating efficient, scalable web applications with clean code.</p>
+      </div>
+      
+      <!-- Skills Sections -->
+      <div class="row">
+        <!-- Programming Languages -->
+        <div class="col-lg-6 mb-4">
+          <div class="mb-4">
+            <h2 class="section-title">Programming Languages</h2>
+            <p class="text-muted">Technologies I work with daily</p>
+          </div>
+          
+          <div class="row g-3">
+            <% user.programmingLanguages.forEach(language => { %>
+              <div class="col-md-6">
+                <div class="skill-card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="card-title mb-0">
+                        <i class="fab fa-js me-2 text-warning"></i><%= language.name %>
+                      </h5>
+                      <span class="skill-level level-<%= language.level.toLowerCase() %>">
+                        <%= language.level %>
+                      </span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: <%= language.level === 'Advanced' ? '90%' : (language.level === 'Intermediate' ? '65%' : '40%') %>"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        
+        <!-- Tools & Software -->
+        <div class="col-lg-6 mb-4">
+          <div class="mb-4">
+            <h2 class="section-title">Tools & Software</h2>
+            <p class="text-muted">My development environment and tools</p>
+          </div>
+          
+          <div class="row g-3">
+            <% user.toolsSoftware.forEach(tool => { %>
+              <div class="col-md-6">
+                <div class="skill-card">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="card-title mb-0">
+                        <i class="fas fa-code me-2 text-primary"></i><%= tool.name %>
+                      </h5>
+                      <span class="skill-level level-<%= tool.level.toLowerCase() %>">
+                        <%= tool.level %>
+                      </span>
+                    </div>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: <%= tool.level === 'Advanced' ? '90%' : (tool.level === 'Intermediate' ? '65%' : '40%') %>"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Soft Skills -->
+      <div class="mb-4">
+        <h2 class="section-title">Soft Skills</h2>
+        <p class="text-muted">My interpersonal and professional strengths</p>
+        
+        <div class="row g-3">
+          <% user.softSkills.forEach(skill => { %>
+            <div class="col-md-6 col-lg-4">
+              <div class="skill-card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title mb-0">
+                      <i class="fas fa-users me-2 text-success"></i><%= skill.name %>
+                    </h5>
+                    <span class="skill-level level-<%= skill.level.toLowerCase() %>">
+                      <%= skill.level %>
+                    </span>
+                  </div>
+                  <div class="progress">
+                    <div class="progress-bar" style="width: <%= skill.level === 'Advanced' ? '90%' : (skill.level === 'Intermediate' ? '65%' : '40%') %>"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+      
+      <!-- Edit Profile Button -->
+      <div class="text-center mt-5">
+        <a href="/edit-profile" class="btn btn-edit">
+          <i class="fas fa-user-edit"></i> Edit Profile
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>

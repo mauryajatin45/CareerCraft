@@ -1,103 +1,296 @@
 <%- layout('layouts/boilerplate') %>
 
-<!-- Include Animate.css via CDN or host locally -->
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<!-- Animate.css -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-<!-- Custom CSS for additional styling and animations -->
+<!-- Custom CSS -->
 <style>
-  /* Hero Section Improvements */
+  :root {
+    --primary: #4361ee;
+    --primary-dark: #3f37c9;
+    --secondary: #4895ef;
+    --light: #f8f9fa;
+    --dark: #2b2d42;
+    --accent: #7209b7;
+    --success: #4cc9f0;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+  
+  /* Hero Section */
   .hero-section {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 6rem 0 8rem;
     position: relative;
-    background: url('/images/hero-bg.jpg') center center/cover no-repeat;
-    color: #fff;
     overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
   }
-  .hero-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 100%);
-    z-index: 1;
-  }
-  .hero-section .container {
+  
+  .hero-content {
     position: relative;
     z-index: 2;
   }
-  .hero-section h1,
-  .hero-section p {
-    color: #fff;
+  
+  .hero-title {
+    font-weight: 800;
+    font-size: 3.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
   }
-
-  /* Button Hover Transition */
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+  }
+  
+  .hero-bg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(255,255,255,0.1) 2px, transparent 2px);
+    background-size: 40px 40px;
+    opacity: 0.5;
+  }
+  
+  /* Feature Cards */
+  .feature-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    background: white;
+    box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(67, 97, 238, 0.2);
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+  }
+  
+  /* How It Works */
+  .step-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    height: 100%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary);
+  }
+  
+  .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+  
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  /* Testimonials */
+  .testimonial-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: relative;
+  }
+  
+  .testimonial-card:before {
+    content: """;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 5rem;
+    color: rgba(67, 97, 238, 0.1);
+    font-family: serif;
+    line-height: 1;
+  }
+  
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    margin-top: 1.5rem;
+  }
+  
+  .author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+    border: 3px solid var(--primary);
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    background: linear-gradient(135deg, var(--accent), #b5179e);
+    color: white;
+    padding: 5rem 0;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+    margin-top: 5rem;
+  }
+  
+  .cta-title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Buttons */
   .btn-primary {
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    background: var(--primary);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
+  
   .btn-primary:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
+    background: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
   }
-
-  /* Cards and Icon Animations */
-  .features-section i,
-  .how-it-works i {
-    transition: transform 0.3s ease;
+  
+  .btn-outline-white {
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
-  .features-section i:hover,
-  .how-it-works i:hover {
-    transform: scale(1.1);
+  
+  .btn-outline-white:hover {
+    background: white;
+    color: var(--primary);
+    transform: translateY(-3px);
   }
-
-  /* Smooth fade in for sections */
-  .fadeInUp {
-    animation: fadeInUp 1s ease both;
+  
+  /* Animations */
+  .animate-delay-1 {
+    animation-delay: 0.2s;
   }
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
+  
+  .animate-delay-2 {
+    animation-delay: 0.4s;
+  }
+  
+  .animate-delay-3 {
+    animation-delay: 0.6s;
+  }
+  
+  .animate-delay-4 {
+    animation-delay: 0.8s;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2.5rem;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    
+    .hero-section {
+      padding: 4rem 0 6rem;
+      clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+    }
+    
+    .cta-section {
+      clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%);
     }
   }
 </style>
 
 <!-- Hero Section -->
-<section class="hero-section text-center py-5 animate__animated animate__fadeInDown">
+<section class="hero-section text-center">
+  <div class="hero-bg-pattern"></div>
   <div class="container">
-    <h1 class="display-4 fw-bold">Navigate Your Career Future with AI</h1>
-    <p class="lead">Discover personalized career paths, master job market trends, and unlock your full potential.</p>
-    <a href="/get-started" class="btn btn-primary btn-lg mt-3">Get Started</a>
+    <div class="hero-content animate__animated animate__fadeIn">
+      <h1 class="hero-title">Your AI-Powered Career Navigator</h1>
+      <p class="hero-subtitle">Discover personalized career paths, master job market trends, and unlock your full potential with our intelligent career advisor.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="#features" class="btn btn-outline-white btn-lg">Learn More</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Features Section -->
-<section class="features-section py-5">
-  <div class="container">
-    <div class="row text-center">
-      <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-        <div class="p-3">
-          <i class="fa-solid fa-chart-line fa-3x mb-3 text-primary"></i>
-          <h5 class="fw-bold">Skills Assessment</h5>
-          <p>Evaluate your abilities with our advanced AI tools.</p>
+<section id="features" class="py-5 bg-light">
+  <div class="container py-5">
+    <div class="text-center mb-5 animate__animated animate__fadeIn">
+      <h2 class="fw-bold">Key Features</h2>
+      <p class="lead text-muted">Everything you need to advance your career</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-1">
+        <div class="feature-card p-4 text-center">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h4>Skills Assessment</h4>
+          <p>Evaluate your abilities with our advanced AI-powered assessment tools.</p>
         </div>
       </div>
-      <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
-        <div class="p-3">
-          <i class="fa-solid fa-briefcase fa-3x mb-3 text-primary"></i>
-          <h5 class="fw-bold">Job Market Analysis</h5>
-          <p>Get the latest insights into the current job market.</p>
+      
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-2">
+        <div class="feature-card p-4 text-center">
+          <div class="feature-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <h4>Market Analysis</h4>
+          <p>Real-time insights into current job market demands and trends.</p>
         </div>
       </div>
-      <div class="col-md-4 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
-        <div class="p-3">
-          <i class="fa-solid fa-file-lines fa-3x mb-3 text-primary"></i>
-          <h5 class="fw-bold">Resume & Interview Tips</h5>
-          <p>Access expert advice to help you stand out in any crowd.</p>
+      
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-3">
+        <div class="feature-card p-4 text-center">
+          <div class="feature-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h4>Resume Builder</h4>
+          <p>Create professional resumes tailored to your target roles.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-4">
+        <div class="feature-card p-4 text-center">
+          <div class="feature-icon">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <h4>Network Analysis</h4>
+          <p>Identify key connections to accelerate your career growth.</p>
         </div>
       </div>
     </div>
@@ -105,43 +298,43 @@
 </section>
 
 <!-- How It Works Section -->
-<section class="how-it-works py-5 bg-light">
-  <div class="container">
-    <div class="text-center mb-5 animate__animated animate__fadeInDown">
+<section class="py-5">
+  <div class="container py-5">
+    <div class="text-center mb-5 animate__animated animate__fadeIn">
       <h2 class="fw-bold">How It Works</h2>
-      <p class="lead">Follow these simple steps to kickstart your career journey.</p>
+      <p class="lead text-muted">Get career guidance in just 4 simple steps</p>
     </div>
-    <div class="row text-center">
-      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-        <div class="p-4">
-          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-               style="width: 50px; height: 50px; font-size: 1.25rem;">1</div>
-          <h5 class="fw-bold">Assessment</h5>
-          <p>Start with a quick skill assessment.</p>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-1">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h4>Complete Assessment</h4>
+          <p>Take our comprehensive skills and personality assessment to establish your baseline.</p>
         </div>
       </div>
-      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
-        <div class="p-4">
-          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-               style="width: 50px; height: 50px; font-size: 1.25rem;">2</div>
-          <h5 class="fw-bold">Market Analysis</h5>
-          <p>Gain insights from current job market data.</p>
+      
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-2">
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h4>Market Comparison</h4>
+          <p>We analyze your profile against current job market demands and opportunities.</p>
         </div>
       </div>
-      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
-        <div class="p-4">
-          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-               style="width: 50px; height: 50px; font-size: 1.25rem;">3</div>
-          <h5 class="fw-bold">Personalized Tips</h5>
-          <p>Receive custom resume and interview advice.</p>
+      
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-3">
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h4>Personalized Plan</h4>
+          <p>Receive a customized career roadmap with actionable steps for growth.</p>
         </div>
       </div>
-      <div class="col-md-3 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.8s;">
-        <div class="p-4">
-          <div class="mx-auto mb-2 rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-               style="width: 50px; height: 50px; font-size: 1.25rem;">4</div>
-          <h5 class="fw-bold">Network Enhancement</h5>
-          <p>Leverage insights to expand your professional network.</p>
+      
+      <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp animate-delay-4">
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h4>Interview Prep</h4>
+          <p>Get tailored interview preparation and resume optimization advice.</p>
         </div>
       </div>
     </div>
@@ -149,28 +342,48 @@
 </section>
 
 <!-- Testimonials Section -->
-<section class="testimonials py-5">
-  <div class="container">
-    <div class="text-center mb-5 animate__animated animate__fadeInDown">
-      <h2 class="fw-bold">What Our Users Say</h2>
+<section class="py-5 bg-light">
+  <div class="container py-5">
+    <div class="text-center mb-5 animate__animated animate__fadeIn">
+      <h2 class="fw-bold">Success Stories</h2>
+      <p class="lead text-muted">What our users say about their experience</p>
     </div>
-    <div class="row">
-      <div class="col-md-6 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
-        <div class="card p-4 shadow-sm border-0">
-          <div class="card-body">
-            <p class="card-text">"This platform has revolutionized the way I approach my career."</p>
-            <h6 class="card-title text-end">- Alex</h6>
+    
+    <div class="row g-4">
+      <div class="col-md-6 animate__animated animate__fadeInUp animate-delay-1">
+        <div class="testimonial-card">
+          <p>"This platform completely transformed my career trajectory. The personalized recommendations helped me identify skills I didn't even realize were valuable in my field."</p>
+          <div class="testimonial-author">
+            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Alex" class="author-avatar">
+            <div>
+              <h6 class="mb-0">Alex Johnson</h6>
+              <small class="text-muted">Software Developer</small>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6 mb-4 animate__animated animate__fadeInUp" style="animation-delay: 0.5s;">
-        <div class="card p-4 shadow-sm border-0">
-          <div class="card-body">
-            <p class="card-text">"The insights I gained here truly set me apart in a competitive market."</p>
-            <h6 class="card-title text-end">- Jamie</h6>
+      
+      <div class="col-md-6 animate__animated animate__fadeInUp animate-delay-2">
+        <div class="testimonial-card">
+          <p>"The interview preparation tools gave me the confidence to land my dream job. I doubled my salary in just 6 months thanks to the strategic career path suggested."</p>
+          <div class="testimonial-author">
+            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Jamie" class="author-avatar">
+            <div>
+              <h6 class="mb-0">Jamie Smith</h6>
+              <small class="text-muted">Marketing Director</small>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container text-center">
+    <h2 class="cta-title animate__animated animate__fadeIn">Ready to Transform Your Career?</h2>
+    <p class="lead mb-4 animate__animated animate__fadeIn">Join thousands of professionals who've accelerated their careers with our AI advisor.</p>
+    <a href="/skill-assessment" class="btn btn-primary btn-lg animate__animated animate__fadeInUp">Start Free Assessment</a>
   </div>
 </section>
