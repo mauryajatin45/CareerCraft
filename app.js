@@ -20,6 +20,8 @@ const {router: resumeRoutes} = require('./routes/resume-interview');
 const { router: interviewPrepRouter } = require('./routes/interview-prep');
 const { router: networkRoutes } = require('./routes/network'); 
 const { router: careerSuggestion  } = require('./routes/carrer-suggestions'); 
+const airesumeRoutes = require('./routes/resume');
+
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
@@ -117,6 +119,8 @@ app.use("/", jobMarketRouter);
 app.use("/", resumeRoutes);
 app.use("/", interviewPrepRouter);
 app.use("/", networkRoutes);
+app.use('/resume', airesumeRoutes);
+
 
 // 404 Handler
 app.use((req, res) => {

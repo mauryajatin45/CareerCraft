@@ -1,0 +1,697 @@
+<%- layout('layouts/boilerplate') %>
+
+<!-- Include libraries -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root {
+    --primary: #4361ee;
+    --primary-dark: #3f37c9;
+    --secondary: #4895ef;
+    --light: #f8f9fa;
+    --dark: #2b2d42;
+    --accent: #7209b7;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7ff;
+  }
+  
+  .resume-builder-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .wizard-container {
+    padding: 2rem;
+    background: var(--light);
+  }
+  
+  .resume-preview-container {
+    padding: 2rem;
+    background: white;
+    border-left: 1px solid #eee;
+  }
+  
+  .step {
+    display: none;
+  }
+  
+  .step.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .progress-bar {
+    background-color: var(--primary);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary);
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  /* Resume Template Styles */
+  .resume-template {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .resume-header {
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .resume-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .resume-title {
+    font-size: 1.2rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+  }
+  
+  .resume-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .resume-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .experience-item, .education-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .job-title, .degree {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  
+  .company, .school {
+    font-weight: 500;
+    color: var(--dark);
+  }
+  
+  .date {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .skill-tag {
+    background: var(--light);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+</style>
+
+<div class="resume-builder-container">
+  <div class="row g-0">
+    <!-- Wizard Sidebar -->
+    <div class="col-lg-5 wizard-container">
+      <h3 class="mb-4">AI Resume Builder</h3>
+      
+      <div class="progress mb-4">
+        <div class="progress-bar" role="progressbar" style="width: 0%" id="progressBar"></div>
+      </div>
+      
+      <!-- Step 1: Basic Info -->
+      <div class="step active" id="step1">
+        <h5 class="mb-3">Let's start with your basic information</h5>
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="fullName">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Professional Title</label>
+          <input type="text" class="form-control" id="professionalTitle" placeholder="e.g. Software Engineer">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="email">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-control" id="phone">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Location</label>
+          <input type="text" class="form-control" id="location" placeholder="City, Country">
+        </div>
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-primary" onclick="nextStep(2)">Next <i class="fas fa-arrow-right ms-2"></i></button>
+        </div>
+      </div>
+      
+      <!-- Step 2: Experience -->
+      <div class="step" id="step2">
+        <h5 class="mb-3">Your Work Experience</h5>
+        <div id="experienceContainer">
+          <div class="experience-item mb-3">
+            <div class="mb-3">
+              <label class="form-label">Job Title</label>
+              <input type="text" class="form-control" name="jobTitle">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Company</label>
+              <input type="text" class="form-control" name="company">
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Start Date</label>
+                <input type="month" class="form-control" name="startDate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">End Date</label>
+                <input type="month" class="form-control" name="endDate">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3" name="jobDescription" placeholder="Describe your responsibilities and achievements"></textarea>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary mb-3" onclick="addExperience()">
+          <i class="fas fa-plus me-2"></i>Add Another Experience
+        </button>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-outline-secondary" onclick="prevStep(1)">
+            <i class="fas fa-arrow-left me-2"></i>Back
+          </button>
+          <button class="btn btn-primary" onclick="nextStep(3)">
+            Next <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Step 3: Education -->
+      <div class="step" id="step3">
+        <h5 class="mb-3">Your Education</h5>
+        <div id="educationContainer">
+          <div class="education-item mb-3">
+            <div class="mb-3">
+              <label class="form-label">Degree</label>
+              <input type="text" class="form-control" name="degree" placeholder="e.g. Bachelor of Science in Computer Science">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Institution</label>
+              <input type="text" class="form-control" name="institution">
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Start Date</label>
+                <input type="month" class="form-control" name="eduStartDate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">End Date</label>
+                <input type="month" class="form-control" name="eduEndDate">
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary mb-3" onclick="addEducation()">
+          <i class="fas fa-plus me-2"></i>Add Another Education
+        </button>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-outline-secondary" onclick="prevStep(2)">
+            <i class="fas fa-arrow-left me-2"></i>Back
+          </button>
+          <button class="btn btn-primary" onclick="nextStep(4)">
+            Next <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Step 4: Skills -->
+      <div class="step" id="step4">
+        <h5 class="mb-3">Your Skills</h5>
+        <div class="mb-3">
+          <label class="form-label">Add your skills (comma separated)</label>
+          <textarea class="form-control" rows="3" id="skillsInput" placeholder="e.g. JavaScript, React, Project Management"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Or let AI suggest skills based on your experience</label>
+          <button class="btn btn-outline-primary w-100" onclick="suggestSkills()">
+            <i class="fas fa-magic me-2"></i>Suggest Skills with AI
+          </button>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-outline-secondary" onclick="prevStep(3)">
+            <i class="fas fa-arrow-left me-2"></i>Back
+          </button>
+          <button class="btn btn-primary" onclick="nextStep(5)">
+            Next <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Step 5: Summary -->
+      <div class="step" id="step5">
+        <h5 class="mb-3">Professional Summary</h5>
+        <div class="mb-3">
+          <label class="form-label">Write a brief summary about yourself</label>
+          <textarea class="form-control" rows="4" id="summaryInput"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Or generate one with AI</label>
+          <button class="btn btn-outline-primary w-100" onclick="generateSummary()">
+            <i class="fas fa-magic me-2"></i>Generate Summary with AI
+          </button>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-outline-secondary" onclick="prevStep(4)">
+            <i class="fas fa-arrow-left me-2"></i>Back
+          </button>
+          <button class="btn btn-success" onclick="generateResume()">
+            <i class="fas fa-file-alt me-2"></i>Generate Resume
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Resume Preview -->
+    <div class="col-lg-7 resume-preview-container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Resume Preview</h3>
+        <button class="btn btn-primary" id="downloadBtn" disabled onclick="downloadResume()">
+          <i class="fas fa-download me-2"></i>Download PDF
+        </button>
+      </div>
+      
+      <div id="resumeTemplate" class="resume-template">
+        <!-- Resume content will be generated here -->
+        <div class="text-center text-muted py-5">
+          <i class="fas fa-file-alt fa-4x mb-3"></i>
+          <h4>Your resume will appear here</h4>
+          <p>Complete the steps on the left to generate your resume</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Initialize jsPDF
+  const { jsPDF } = window.jspdf;
+  
+  // Current step tracking
+  let currentStep = 1;
+  const totalSteps = 5;
+  
+  // Resume data object
+  const resumeData = {
+    basics: {},
+    experience: [],
+    education: [],
+    skills: [],
+    summary: ""
+  };
+  
+  // Navigation functions
+  function nextStep(step) {
+    // Validate current step before proceeding
+    if (!validateStep(currentStep)) return;
+    
+    // Collect data from current step
+    collectStepData(currentStep);
+    
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    currentStep = step;
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    updateProgressBar();
+  }
+  
+  function prevStep(step) {
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    currentStep = step;
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    updateProgressBar();
+  }
+  
+  function updateProgressBar() {
+    const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    document.getElementById('progressBar').style.width = `${progress}%`;
+  }
+  
+  // Step validation
+  function validateStep(step) {
+    switch(step) {
+      case 1:
+        const name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        if (!name || !email) {
+          alert('Please fill in all required fields');
+          return false;
+        }
+        return true;
+      default:
+        return true;
+    }
+  }
+  
+  // Data collection
+  function collectStepData(step) {
+    switch(step) {
+      case 1:
+        resumeData.basics = {
+          name: document.getElementById('fullName').value.trim(),
+          title: document.getElementById('professionalTitle').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          phone: document.getElementById('phone').value.trim(),
+          location: document.getElementById('location').value.trim()
+        };
+        break;
+      case 2:
+        resumeData.experience = [];
+        const expItems = document.querySelectorAll('#experienceContainer .experience-item');
+        expItems.forEach(item => {
+          resumeData.experience.push({
+            jobTitle: item.querySelector('[name="jobTitle"]').value.trim(),
+            company: item.querySelector('[name="company"]').value.trim(),
+            startDate: formatDate(item.querySelector('[name="startDate"]').value),
+            endDate: formatDate(item.querySelector('[name="endDate"]').value),
+            description: item.querySelector('[name="jobDescription"]').value.trim()
+          });
+        });
+        break;
+      case 3:
+        resumeData.education = [];
+        const eduItems = document.querySelectorAll('#educationContainer .education-item');
+        eduItems.forEach(item => {
+          resumeData.education.push({
+            degree: item.querySelector('[name="degree"]').value.trim(),
+            institution: item.querySelector('[name="institution"]').value.trim(),
+            startDate: formatDate(item.querySelector('[name="eduStartDate"]').value),
+            endDate: formatDate(item.querySelector('[name="eduEndDate"]').value)
+          });
+        });
+        break;
+      case 4:
+        const skillsText = document.getElementById('skillsInput').value.trim();
+        resumeData.skills = skillsText.split(',').map(skill => skill.trim()).filter(skill => skill);
+        break;
+      case 5:
+        resumeData.summary = document.getElementById('summaryInput').value.trim();
+        break;
+    }
+  }
+  
+  // Date formatting
+  function formatDate(dateString) {
+    if (!dateString) return 'Present';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+  }
+  
+  // Add more fields
+  function addExperience() {
+    const container = document.getElementById('experienceContainer');
+    const newItem = document.createElement('div');
+    newItem.className = 'experience-item mb-3';
+    newItem.innerHTML = `
+      <div class="mb-3">
+        <label class="form-label">Job Title</label>
+        <input type="text" class="form-control" name="jobTitle">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Company</label>
+        <input type="text" class="form-control" name="company">
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Start Date</label>
+          <input type="month" class="form-control" name="startDate">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">End Date</label>
+          <input type="month" class="form-control" name="endDate">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" rows="3" name="jobDescription" placeholder="Describe your responsibilities and achievements"></textarea>
+      </div>
+      <button class="btn btn-outline-danger btn-sm" onclick="this.parentNode.remove()">
+        <i class="fas fa-trash me-1"></i>Remove
+      </button>
+    `;
+    container.appendChild(newItem);
+  }
+  
+  function addEducation() {
+    const container = document.getElementById('educationContainer');
+    const newItem = document.createElement('div');
+    newItem.className = 'education-item mb-3';
+    newItem.innerHTML = `
+      <div class="mb-3">
+        <label class="form-label">Degree</label>
+        <input type="text" class="form-control" name="degree" placeholder="e.g. Bachelor of Science in Computer Science">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Institution</label>
+        <input type="text" class="form-control" name="institution">
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Start Date</label>
+          <input type="month" class="form-control" name="eduStartDate">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">End Date</label>
+          <input type="month" class="form-control" name="eduEndDate">
+        </div>
+      </div>
+      <button class="btn btn-outline-danger btn-sm" onclick="this.parentNode.remove()">
+        <i class="fas fa-trash me-1"></i>Remove
+      </button>
+    `;
+    container.appendChild(newItem);
+  }
+  
+  // AI Features
+  async function suggestSkills() {
+  try {
+    const button = document.querySelector('#step4 button.btn-outline-primary');
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+
+    const response = await fetch('/resume/ai-suggestions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: 'suggest skills based on my experience',
+        context: {
+          experience: resumeData.experience,
+          education: resumeData.education
+        }
+      })
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to get suggestions');
+    }
+
+    document.getElementById('skillsInput').value = [
+      ...(data.suggestions || []),
+      ...(data.examples || [])
+    ].join(', ');
+    
+  } catch (error) {
+    console.error('Frontend Error:', error);
+    alert(error.message);
+  } finally {
+    const button = document.querySelector('#step4 button.btn-outline-primary');
+    button.disabled = false;
+    button.innerHTML = '<i class="fas fa-magic me-2"></i>Suggest Skills with AI';
+  }
+}
+
+  async function generateSummary() {
+    if (!resumeData.basics.name || !resumeData.experience.length) {
+      alert('Please complete your basic info and experience first');
+      return;
+    }
+    
+    // Simulate AI API call
+    document.getElementById('summaryInput').placeholder = "Generating professional summary...";
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Sample summary based on input (in real app, use AI)
+    const name = resumeData.basics.name.split(' ')[0];
+    const jobTitle = resumeData.experience[0].jobTitle;
+    const company = resumeData.experience[0].company;
+    const years = Math.floor(Math.random() * 5) + 3; // Random experience years
+    
+    const summary = `${name} is a ${jobTitle} with ${years} years of experience in the field. At ${company}, ${name} ${getRandomAction(jobTitle)}. ${name} is skilled in ${resumeData.skills.slice(0, 3).join(', ')} and holds a ${resumeData.education.length ? resumeData.education[0].degree : 'relevant degree'}.`;
+    
+    document.getElementById('summaryInput').value = summary;
+    document.getElementById('summaryInput').placeholder = "";
+  }
+  
+  function getRandomAction(jobTitle) {
+    const actions = {
+      'developer': 'developed scalable applications and implemented efficient coding practices',
+      'manager': 'led cross-functional teams and delivered projects on time and under budget',
+      'designer': 'created visually stunning designs that improved user engagement',
+      'analyst': 'transformed complex data into actionable business insights'
+    };
+    
+    return actions[jobTitle.toLowerCase()] || 'performed key responsibilities that drove business success';
+  }
+  
+  // Resume Generation
+  function generateResume() {
+    collectStepData(5); // Ensure all data is collected
+    
+    const resumeHTML = `
+      <div class="resume-template">
+        <div class="resume-header">
+          <h1 class="resume-name">${resumeData.basics.name}</h1>
+          <h2 class="resume-title">${resumeData.basics.title}</h2>
+          <div class="resume-contact">
+            <span><i class="fas fa-envelope me-1"></i> ${resumeData.basics.email}</span>
+            <span><i class="fas fa-phone me-1"></i> ${resumeData.basics.phone}</span>
+            <span><i class="fas fa-map-marker-alt me-1"></i> ${resumeData.basics.location}</span>
+          </div>
+        </div>
+        
+        ${resumeData.summary ? `
+        <div class="resume-section">
+          <h3 class="section-title">SUMMARY</h3>
+          <p>${resumeData.summary}</p>
+        </div>
+        ` : ''}
+        
+        ${resumeData.experience.length ? `
+        <div class="resume-section">
+          <h3 class="section-title">EXPERIENCE</h3>
+          ${resumeData.experience.map(exp => `
+            <div class="experience-item">
+              <h4 class="job-title">${exp.jobTitle}</h4>
+              <div class="d-flex justify-content-between">
+                <span class="company">${exp.company}</span>
+                <span class="date">${exp.startDate} - ${exp.endDate}</span>
+              </div>
+              <p class="mt-2">${exp.description.replace(/\n/g, '<br>')}</p>
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
+        
+        ${resumeData.education.length ? `
+        <div class="resume-section">
+          <h3 class="section-title">EDUCATION</h3>
+          ${resumeData.education.map(edu => `
+            <div class="education-item">
+              <h4 class="degree">${edu.degree}</h4>
+              <div class="d-flex justify-content-between">
+                <span class="school">${edu.institution}</span>
+                <span class="date">${edu.startDate} - ${edu.endDate}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
+        
+        ${resumeData.skills.length ? `
+        <div class="resume-section">
+          <h3 class="section-title">SKILLS</h3>
+          <div class="skills-list">
+            ${resumeData.skills.map(skill => `
+              <span class="skill-tag">${skill}</span>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+      </div>
+    `;
+    
+    document.getElementById('resumeTemplate').innerHTML = resumeHTML;
+    document.getElementById('downloadBtn').disabled = false;
+  }
+  
+  // PDF Download
+  async function downloadResume() {
+    const resumeElement = document.getElementById('resumeTemplate');
+    
+    // Show loading state
+    const downloadBtn = document.getElementById('downloadBtn');
+    const originalText = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating PDF...';
+    downloadBtn.disabled = true;
+    
+    try {
+      // Use html2canvas to capture the resume
+      const canvas = await html2canvas(resumeElement, {
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+      
+      // Create PDF
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgData = canvas.toDataURL('image/png');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`${resumeData.basics.name.replace(' ', '_')}_Resume.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      // Restore button state
+      downloadBtn.innerHTML = originalText;
+      downloadBtn.disabled = false;
+    }
+  }
+</script>
