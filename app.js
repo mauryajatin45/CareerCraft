@@ -8,9 +8,10 @@ const path = require('path');
 const ejsMate = require("ejs-mate");
 const LocalStrategy = require("passport-local").Strategy;
 const methodOverride = require('method-override');
-require('dotenv').config(); // 🔥 Load environment variables from .env
+require('dotenv').config();
+const ngrok = require('ngrok'); // include ngrok
 
-const Resume = require('./models/Resume'); // Assuming you have a Resume model
+const Resume = require('./models/Resume');
 
 // Import routes and passport strategy
 const {router: authRoutes} = require('./routes/authRoutes');
@@ -21,7 +22,7 @@ const { router: interviewPrepRouter } = require('./routes/interview-prep');
 const { router: networkRoutes } = require('./routes/network'); 
 const { router: careerSuggestion  } = require('./routes/carrer-suggestions'); 
 const airesumeRoutes = require('./routes/resume');
-
+const { router: mentorRoutes } = require('./routes/mentor');
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
@@ -43,10 +44,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 
-// Flash messages middleware
 app.use(flash());
 
-// Session options using MongoStore and secret from .env
 const sessionOptions = {
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URI
@@ -55,7 +54,7 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
   },
@@ -63,7 +62,6 @@ const sessionOptions = {
 
 app.use(session(sessionOptions));
 
-// Passport config
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -74,10 +72,8 @@ passport.use(new LocalStrategy({
   try {
     const user = await User.findOne({ username });
     if (!user) return done(null, false, { message: 'No user found' });
-
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return done(null, false, { message: 'Incorrect password' });
-
     return done(null, user);
   } catch (err) {
     return done(err);
@@ -96,22 +92,19 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Flash message globals
 app.use((req, res, next) => {
   res.locals.success_message = req.flash('success');
   res.locals.error_message = req.flash('error');
   next();
 });
 
-// Set current user for views
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
 });
 
-app.use(express.json()); 
+app.use(express.json());
 
-// Routes
 app.use("/", authRoutes);
 app.use("/", skillAssessmentRouter); 
 app.use("/", careerSuggestion);
@@ -120,14 +113,54 @@ app.use("/", resumeRoutes);
 app.use("/", interviewPrepRouter);
 app.use("/", networkRoutes);
 app.use('/resume', airesumeRoutes);
+app.use('/', mentorRoutes);
 
 
-// 404 Handler
+// New route for video call page
+app.get('/video-call', (req, res) => {
+  res.render('video-call');
+});
+
 app.use((req, res) => {
   res.status(404).render('404.ejs');
 });
 
-// Server start
-app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
+const http = require('http');
+const server = http.createServer(app);
+
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+  console.log('A user connected: ', socket.id);
+  socket.on('join-room', (roomId) => {
+    socket.join(roomId);
+    socket.to(roomId).emit('user-connected', socket.id);
+    console.log(`Socket ${socket.id} joined room ${roomId}`);
+
+    socket.on('offer', (data) => {
+      socket.to(roomId).emit('offer', data);
+    });
+    socket.on('answer', (data) => {
+      socket.to(roomId).emit('answer', data);
+    });
+    socket.on('candidate', (data) => {
+      socket.to(roomId).emit('candidate', data);
+    });
+
+    socket.on('disconnect', () => {
+      socket.to(roomId).emit('user-disconnected', socket.id);
+      console.log('User disconnected: ', socket.id);
+    });
+  });
+});
+
+// Start the HTTP server and then create an ngrok tunnel
+server.listen(port, async () => {
+  console.log(`🚀 Server is running on port ${port}`);
+  try {
+    const url = await ngrok.connect(port);
+    console.log(`ngrok tunnel established at: ${url}`);
+  } catch (error) {
+    console.error('Error starting ngrok tunnel:', error);
+  }
 });

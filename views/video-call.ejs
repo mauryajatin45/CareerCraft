@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Call</title>
+  <style>
+    video {
+      width: 45%;
+      margin: 2%;
+      background: #000;
+    }
+    #videos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #controls {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Video Call</h1>
+  <div id="videos">
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+  </div>
+  <div id="controls">
+    <button id="callBtn">Start Call</button>
+  </div>
+
+  <!-- Load Socket.io client -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const roomId = 'video-room'; // using a fixed room for simplicity
+
+    let localStream;
+    let peerConnection;
+    const configuration = {
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    };
+
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    const callBtn = document.getElementById('callBtn');
+
+    // Get user media
+    async function initMedia() {
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideo.srcObject = localStream;
+      } catch (err) {
+        console.error('Error accessing media devices.', err);
+      }
+    }
+
+    // Initialize peer connection and setup listeners
+    function createPeerConnection() {
+      peerConnection = new RTCPeerConnection(configuration);
+
+      // Add local tracks to peer connection
+      localStream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, localStream);
+      });
+
+      // When a remote track arrives, display it
+      peerConnection.ontrack = (event) => {
+        remoteVideo.srcObject = event.streams[0];
+      };
+
+      // ICE candidates handling
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit('candidate', { candidate: event.candidate, roomId });
+        }
+      };
+    }
+
+    // Start call handler
+    async function startCall() {
+      socket.emit('join-room', roomId);
+      createPeerConnection();
+
+      // Create and send an offer if this is the caller
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      socket.emit('offer', { offer, roomId });
+    }
+
+    // Listen for signaling events
+    socket.on('offer', async (data) => {
+      if (!peerConnection) {
+        createPeerConnection();
+      }
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+      socket.emit('answer', { answer, roomId });
+    });
+
+    socket.on('answer', async (data) => {
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+    });
+
+    socket.on('candidate', async (data) => {
+      try {
+        await peerConnection.addIceCandidate(data.candidate);
+      } catch (e) {
+        console.error('Error adding received ice candidate', e);
+      }
+    });
+
+    // Event handlers for button
+    callBtn.addEventListener('click', async () => {
+      await initMedia();
+      startCall();
+      callBtn.disabled = true;
+    });
+  </script>
+</body>
+</html>

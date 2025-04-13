@@ -1,0 +1,86 @@
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6; /* Light gray background */
+  }
+
+  .profile-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .profile-card {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+  }
+
+  .profile-card h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4f46e5; /* Indigo color */
+    margin-bottom: 16px;
+  }
+
+  .profile-card p {
+    color: #374151; /* Dark gray */
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+  }
+
+  .profile-card strong {
+    color: #1f2937; /* Darker gray for emphasis */
+  }
+
+  .linkedin-button {
+    display: inline-block;
+    background: #3b82f6; /* Blue color */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.3s;
+    font-size: 1rem;
+  }
+
+  .linkedin-button:hover {
+    background: #2563eb; /* Darker blue on hover */
+  }
+
+  .logout-link {
+    margin-top: 24px;
+    color: #ef4444; /* Red color */
+    text-decoration: underline;
+    font-size: 1rem;
+  }
+
+  .logout-link:hover {
+    color: #dc2626; /* Darker red on hover */
+  }
+</style>
+
+<div class="profile-container">
+  <div class="profile-card">
+    <h1>Welcome, <%= mentor.fullName %>!</h1>
+    <p>🎯 Expertise: <strong><%= mentor.expertise %></strong></p>
+    <p>💼 Experience: <strong><%= mentor.experienceYears %> years</strong></p>
+    <p>📜 Bio: <%= mentor.bio %></p>
+
+    <% if (mentor.linkedin) { %>
+      <a href="<%= mentor.linkedin %>" target="_blank" class="linkedin-button">View LinkedIn</a>
+    <% } %>
+
+    <div>
+      <a href="/logout" class="logout-link">Logout</a>
+    </div>
+  </div>
+</div>
