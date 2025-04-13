@@ -1,49 +1,152 @@
 <%- layout('layouts/boilerplate') %>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Market</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJb3X0vJd7v3FjG5aOX1FsXFYX5Rzlgk6QgXkX6b0/ppPdhHfHrV8bld27S3" crossorigin="anonymous">
+  <title>Job Market Analysis</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #4361ee;
+      --accent: #7209b7;
+      --gradient: linear-gradient(135deg, var(--primary), var(--accent));
+    }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #495057;
+    .analysis-container {
+      min-height: 88vh;
+      display: flex;
+      align-items: center;
+      padding: 2rem 0;
+    }
+
+    .analysis-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      padding: 2.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-header {
       text-align: center;
+      margin-bottom: 2rem;
     }
-    .form-group input {
-      border-radius: 8px;
-      border: 1px solid #ced4da;
-      padding: 12px;
-      margin-bottom: 15px;
+
+    .form-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
     }
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
+
+    .form-subtitle {
+      color: #6c757d;
+      font-size: 1.1rem;
+    }
+
+    .form-control {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 0.5rem;
+    }
+
+    .submit-btn {
+      background: var(--gradient);
+      border: none;
+      border-radius: 10px;
+      padding: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    .submit-btn i {
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 576px) {
+      .analysis-card {
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+      
+      .form-title {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
 <body>
-    <h1>Enter Job Title and Location</h1>
-    <form action="/job-market" method="POST">
-      <div class="form-group">
-        <label for="jobTitle">Job Title</label>
-        <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="Enter Job Title" required>
+  <div class="analysis-container">
+    <div class="analysis-card">
+      <div class="form-header">
+        <h1 class="form-title">
+          <i class="fas fa-chart-line"></i>
+          Job Market Analysis
+        </h1>
+        <p class="form-subtitle">Get real-time insights for any position</p>
       </div>
-      <div class="form-group">
-        <label for="location">Location</label>
-        <input type="text" class="form-control" id="location" name="location" placeholder="Enter Location" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Get Job Data</button>
-    </form>
+
+      <form action="/job-market" method="POST">
+        <div class="mb-4">
+          <label for="jobTitle" class="form-label">Job Title</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="jobTitle" 
+            name="jobTitle" 
+            placeholder="e.g., Software Engineer, Data Scientist..."
+            required
+          >
+        </div>
+
+        <div class="mb-4">
+          <label for="location" class="form-label">Location</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="location" 
+            name="location" 
+            placeholder="e.g., New York, Remote, India..."
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary submit-btn">
+          <i class="fas fa-magnifying-glass"></i>
+          Analyze Market
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0H6rBv8p5X6/xLk2f2x6TzZ+eaTzDcb5Rmf12j/A47/eCe79" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
