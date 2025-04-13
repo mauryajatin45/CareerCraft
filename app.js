@@ -22,6 +22,7 @@ const { router: interviewPrepRouter } = require('./routes/interview-prep');
 const { router: networkRoutes } = require('./routes/network'); 
 const { router: careerSuggestion  } = require('./routes/carrer-suggestions'); 
 const airesumeRoutes = require('./routes/resume');
+const { router: mentorRoutes } = require('./routes/mentor');
 
 const User = require('./models/User'); 
 require('./config/passport')(passport); 
@@ -112,6 +113,8 @@ app.use("/", resumeRoutes);
 app.use("/", interviewPrepRouter);
 app.use("/", networkRoutes);
 app.use('/resume', airesumeRoutes);
+app.use('/', mentorRoutes);
+
 
 // New route for video call page
 app.get('/video-call', (req, res) => {
