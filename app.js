@@ -8,7 +8,7 @@ const path = require('path');
 const ejsMate = require("ejs-mate");
 const methodOverride = require('method-override');
 require('dotenv').config();
-const ngrok = require('ngrok');
+// const ngrok = require('ngrok');
 const http = require('http');
 const socketIO = require('socket.io');
 
@@ -35,10 +35,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // MongoDB Atlas connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('✅ Connected to MongoDB Atlas'))
 .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
@@ -134,10 +131,14 @@ io.on('connection', (socket) => {
 // Start server and ngrok tunnel
 server.listen(port, async () => {
   console.log(`🚀 Server is running on port ${port}`);
-  try {
-    const url = await ngrok.connect(port);
-    console.log(`🌐 ngrok tunnel established at: ${url}`);
-  } catch (error) {
-    console.error('❌ Error starting ngrok tunnel:', error);
+  
+  // Only use ngrok in development
+  if (process.env.NODE_ENV !== 'production') {
+    try {
+      const url = await ngrok.connect(port);
+      console.log(`🌐 ngrok tunnel established at: ${url}`);
+    } catch (error) {
+      console.error('❌ Error starting ngrok tunnel:', error);
+    }
   }
 });
