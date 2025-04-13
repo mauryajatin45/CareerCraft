@@ -1,33 +1,52 @@
+<%- layout('layouts/boilerplate') %>
 <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="/css/auth.css" />
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 
-<%- layout('layouts/boilerplate') %>
+<div class="container2">
+  <div class="main">
+    <h2>Welcome Back 👋</h2>
+    <form action="/login" class="form" method="POST">
+      <div class="input-span">
+        <input 
+          type="email" 
+          name="username" 
+          id="username" 
+          placeholder=" "
+          required
+        >
+        <label for="username" class="label">Email Address</label>
+      </div>
 
-<body>
-    <div class="container2">
-        <div class="main">
-            <h2>Login</h2>
-            <form action="/login" class="form" method="POST">
-                <span class="input-span">
-                    <label for="username" class="label">Email</label>
-                    <input type="email" name="username" id="username" /></span>
-                <span class="input-span">
-                    <label for="password" class="label">Password</label>
-                    <input type="password" name="password" id="password" /></span>
-                <span class="span"><a href="#">Forgot password?</a></span>
-                <button type="submit" class="submit">Login</button>
-                <span class="span">Don't have an account? <a href="signup">Sign up</a></span>
-            </form>
+      <div class="input-span">
+        <input 
+          type="password" 
+          name="password" 
+          id="password" 
+          placeholder=" "
+          required
+        >
+        <label for="password" class="label">Password</label>
+      </div>
 
-            <% if (error_message) { %>
-                <p>
-                    <%= error_message %>
-                </p>
-                <% } %>
-        </div>
-    </div>
-</body>
+      <button type="submit" class="submit">Continue</button>
 
-</html>
+      <!-- <div class="span">
+        <a href="/forgot-password">Forgot your password?</a>
+      </div> -->
+
+      <div class="span">
+        New here? <a href="signup">Create an account</a>
+      </div>
+    </form>
+
+    <% if (error_message) { %>
+      <div class="error-message">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span><%= error_message %></span>
+      </div>
+    <% } %>
+  </div>
+</div>

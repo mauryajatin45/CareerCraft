@@ -1,114 +1,166 @@
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --error: #ef4444;
+  --text: #1f2937;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  min-height: 100vh;
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  background-color: #f0f0f0;
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
 }
 
 .container2 {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  padding: 2rem;
+  animation: fadeIn 0.6s ease;
+}
+
+.main {
+  background: var(--surface);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow);
+  max-width: 400px;
+  margin: 0 auto;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.main:hover {
+  transform: translateY(-5px);
+}
+
+h2 {
+  color: var(--text);
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
   text-align: center;
-  height: 90vh;
 }
 
-img{
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  margin-left: 5px;
-  margin-top: 5px;
-  width: 50px;
-  height: 50px;
-}
-
-.main{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  width: 28%;
-  border: 1px solid black;
-  border-radius: 1rem;
-  
-}
 .form {
-  --bg-light: #efefef;
-  --bg-dark: #707070;
-  --clr: #58bc82;
-  --clr-alpha: #9c9c9c60;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  max-width: 300px;
+  gap: 1.5rem;
 }
 
-.form .input-span {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form input[type="email"],
-.form input[type="password"],
-.form input[type="text"] {
-  border-radius: 0.5rem;
-  padding: 1rem 0.75rem;
-  width: 100%;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--clr-alpha);
-  outline: 2px solid var(--bg-dark);
-}
-
-.form input[type="email"]:focus,
-.form input[type="password"]:focus {
-  outline: 2px solid var(--clr);
+.input-span {
+  position: relative;
 }
 
 .label {
-  align-self: flex-start;
-  color: var(--clr);
-  font-weight: 600;
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  background: var(--surface);
+  padding: 0 0.5rem;
 }
 
-.form .submit {
-  padding: 1rem 0.75rem;
+input {
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 3rem;
-  background-color: var(--bg-dark);
-  color: var(--bg-light);
-  border: none;
-  cursor: pointer;
-  transition: all 300ms;
-  font-weight: 600;
-  font-size: 0.9rem;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.form .submit:hover {
-  background-color: var(--clr);
-  color: var(--bg-dark);
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+input:focus ~ .label,
+input:not(:placeholder-shown) ~ .label {
+  top: 0;
+  font-size: 0.875rem;
+  color: var(--primary);
+}
+
+.submit {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 .span {
-  text-decoration: none;
-  color: var(--bg-dark);
+  text-align: center;
+  color: #6b7280;
 }
 
 .span a {
-  color: var(--clr);
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.span a:hover {
+  color: var(--primary-hover);
+}
+
+/* Error message styling */
+.error-message {
+  background: #fee2e2;
+  color: var(--error);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
 }
