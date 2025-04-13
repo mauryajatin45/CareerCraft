@@ -15,15 +15,15 @@
       --accent: #7209b7;
       --gradient: linear-gradient(135deg, var(--primary), var(--accent));
     }
-    
+
+    /* Navbar and brand styles */
     .navbar {
       padding: 0.8rem 0;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
       position: sticky;
       top: 0;
-      
     }
-    
+
     .navbar-brand {
       font-weight: 800;
       font-size: 1.5rem;
@@ -34,28 +34,42 @@
       display: flex;
       align-items: center;
     }
-    
+
     .navbar-brand i {
       margin-right: 0.5rem;
       font-size: 1.3em;
     }
-    
+
+    /* Hoverable dropdown */
+    .nav-item.dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
     .nav-link {
       font-weight: 500;
       padding: 0.5rem 1rem;
       border-radius: 8px;
       transition: all 0.3s ease;
     }
-    
+
     .nav-link:hover {
       background: rgba(67, 97, 238, 0.1);
     }
-    
+
     .nav-link.active {
       color: var(--primary);
       font-weight: 600;
     }
-    
+
+    /* AI Resume Button */
     .ai-resume-btn {
       background: var(--gradient);
       color: white;
@@ -69,54 +83,27 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     .ai-resume-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
       color: white;
     }
-    
-    .ai-resume-btn::before {
-      content: "AI POWERED";
-      position: absolute;
-      top: -18px;
-      right: 10px;
-      font-size: 0.6rem;
-      font-weight: 700;
-      color: white;
-      background: var(--accent);
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
-    
+
     .ai-resume-btn i {
       margin-right: 0.5rem;
     }
-    
-    .badge-new {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: #ff4757;
-      color: white;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 0.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
+
+    /* Media Query for smaller screens */
     @media (max-width: 992px) {
       .navbar-collapse {
         padding-top: 1rem;
       }
-      
+
       .nav-link {
         margin-bottom: 0.3rem;
       }
-      
+
       .ai-resume-btn {
         margin-top: 0.5rem;
         margin-bottom: 1rem;
@@ -161,16 +148,9 @@
           <li class="nav-item">
             <a class="nav-link" href="/network">Networking</a>
           </li>
-          
-          <!-- AI Resume Builder as a highlighted nav item -->
-          <li class="nav-item position-relative d-lg-none">
-            <a class="ai-resume-btn" href="/resume/builder">
-              <i class="fas fa-magic"></i>AI Resume Builder
-            </a>
-          </li>
         </ul>
         
-        <!-- Desktop AI Resume Button -->
+        <!-- AI Resume Button (Desktop) -->
         <div class="d-none d-lg-block me-3 position-relative">
           <a class="ai-resume-btn" href="/resume/builder">
             <i class="fas fa-magic"></i>AI Resume Builder
@@ -184,7 +164,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
                  data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-user-circle me-1"></i>
-                <%= user.name.split(' ')[0] %>
+                <%= user && user.name ? user.name.split(' ')[0] : 'User' %>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i>Profile</a></li>
