@@ -45,7 +45,10 @@ router.post('/signup', async (req, res) => {
 
 // Login route
 router.get('/login', (req, res) => {
-    res.render('auth/login.ejs');
+    res.render('auth/login.ejs', {
+        error_message: req.flash('error'),
+        success_message: req.flash('success')
+    });
 });
 
 router.post('/login', passport.authenticate('local', {

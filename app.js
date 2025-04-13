@@ -6,50 +6,57 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const path = require('path');
 const ejsMate = require("ejs-mate");
-const LocalStrategy = require("passport-local").Strategy;
 const methodOverride = require('method-override');
 require('dotenv').config();
-const ngrok = require('ngrok'); // include ngrok
+const ngrok = require('ngrok');
+const http = require('http');
+const socketIO = require('socket.io');
 
+// Models
 const Resume = require('./models/Resume');
+const User = require('./models/User');
 
-// Import routes and passport strategy
-const {router: authRoutes} = require('./routes/authRoutes');
+// Import configured passport
+require('./config/passport')(passport);
+
+// Import routes
+const { router: authRoutes } = require('./routes/authRoutes');
 const { router: skillAssessmentRouter } = require('./routes/skillAssessment');
 const { router: jobMarketRouter } = require('./routes/job-market');
-const {router: resumeRoutes} = require('./routes/resume-interview');
+const { router: resumeRoutes } = require('./routes/resume-interview');
 const { router: interviewPrepRouter } = require('./routes/interview-prep');
-const { router: networkRoutes } = require('./routes/network'); 
-const { router: careerSuggestion  } = require('./routes/carrer-suggestions'); 
+const { router: networkRoutes } = require('./routes/network');
+const { router: careerSuggestion } = require('./routes/carrer-suggestions');
 const airesumeRoutes = require('./routes/resume');
 const { router: mentorRoutes } = require('./routes/mentor');
 
-const User = require('./models/User'); 
-require('./config/passport')(passport); 
-
-// Initialize the app
+// Initialize app
 const app = express();
 const port = process.env.PORT || 3000;
 
-// MongoDB Atlas connection using environment variable
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch((err) => console.error('❌ MongoDB Connection Error:', err));
+// MongoDB Atlas connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('✅ Connected to MongoDB Atlas'))
+.catch((err) => console.error('❌ MongoDB Connection Error:', err));
+
+// View engine and static files
+app.engine("ejs", ejsMate);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(methodOverride("_method"));
-app.engine("ejs", ejsMate);
-
 app.use(flash());
 
+// Session configuration
 const sessionOptions = {
-  store: MongoStore.create({ 
-    mongoUrl: process.env.MONGO_URI
-  }),
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -61,106 +68,76 @@ const sessionOptions = {
 };
 
 app.use(session(sessionOptions));
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new LocalStrategy({
-  usernameField: 'username',
-  passwordField: 'password'
-}, async (username, password, done) => {
-  try {
-    const user = await User.findOne({ username });
-    if (!user) return done(null, false, { message: 'No user found' });
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) return done(null, false, { message: 'Incorrect password' });
-    return done(null, user);
-  } catch (err) {
-    return done(err);
-  }
-}));
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (err) {
-    done(err);
-  }
-});
-
+// Global template variables
 app.use((req, res, next) => {
   res.locals.success_message = req.flash('success');
   res.locals.error_message = req.flash('error');
-  next();
-});
-
-app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
 });
 
-app.use(express.json());
-
-app.use("/", authRoutes);
-app.use("/", skillAssessmentRouter); 
-app.use("/", careerSuggestion);
-app.use("/", jobMarketRouter);
-app.use("/", resumeRoutes);
-app.use("/", interviewPrepRouter);
-app.use("/", networkRoutes);
+// Routes
+app.use('/', authRoutes);
+app.use('/', skillAssessmentRouter);
+app.use('/', careerSuggestion);
+app.use('/', jobMarketRouter);
+app.use('/', resumeRoutes);
+app.use('/', interviewPrepRouter);
+app.use('/', networkRoutes);
 app.use('/resume', airesumeRoutes);
 app.use('/', mentorRoutes);
 
-
-// New route for video call page
+// Video call page
 app.get('/video-call', (req, res) => {
   res.render('video-call');
 });
 
+// 404 handler
 app.use((req, res) => {
   res.status(404).render('404.ejs');
 });
 
-const http = require('http');
+// Socket.io setup
 const server = http.createServer(app);
-
-const io = require('socket.io')(server);
+const io = socketIO(server);
 
 io.on('connection', (socket) => {
-  console.log('A user connected: ', socket.id);
+  console.log('🟢 User connected:', socket.id);
+
   socket.on('join-room', (roomId) => {
     socket.join(roomId);
     socket.to(roomId).emit('user-connected', socket.id);
-    console.log(`Socket ${socket.id} joined room ${roomId}`);
+    console.log(`🔗 Socket ${socket.id} joined room ${roomId}`);
 
     socket.on('offer', (data) => {
       socket.to(roomId).emit('offer', data);
     });
+
     socket.on('answer', (data) => {
       socket.to(roomId).emit('answer', data);
     });
+
     socket.on('candidate', (data) => {
       socket.to(roomId).emit('candidate', data);
     });
 
     socket.on('disconnect', () => {
       socket.to(roomId).emit('user-disconnected', socket.id);
-      console.log('User disconnected: ', socket.id);
+      console.log('🔴 User disconnected:', socket.id);
     });
   });
 });
 
-// Start the HTTP server and then create an ngrok tunnel
+// Start server and ngrok tunnel
 server.listen(port, async () => {
   console.log(`🚀 Server is running on port ${port}`);
   try {
     const url = await ngrok.connect(port);
-    console.log(`ngrok tunnel established at: ${url}`);
+    console.log(`🌐 ngrok tunnel established at: ${url}`);
   } catch (error) {
-    console.error('Error starting ngrok tunnel:', error);
+    console.error('❌ Error starting ngrok tunnel:', error);
   }
 });
