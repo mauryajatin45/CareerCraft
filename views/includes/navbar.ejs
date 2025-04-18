@@ -52,7 +52,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
       padding: 0.5rem 0;
-      margin-top: 0.5rem;
     }
 
     .dropdown-item {
@@ -180,7 +179,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
                  data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-user-circle me-1"></i>
-                <%= (user.name || user.fullName || 'User').split(' ')[0] %>
+                <%= (user.name || 'User').split(' ')[0] %>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i>Profile</a></li>

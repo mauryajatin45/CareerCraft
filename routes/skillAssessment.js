@@ -5,30 +5,31 @@ const MCQ = require('../models/qna');  // Import the MCQ model
 const router = express.Router();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config(); // Load environment variables
-const Assessment = require('../models/Assessment'); 
+const Assessment = require('../models/Assessment');
+const isAuthenticated = require('../middleware/Authenticated');
 
 // Make sure you set this environment variable in .env or hardcode for testing
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'your-api-key');
 
 
 // Render skill-assessment page
-router.get('/skill-assessment', (req, res) => {
+router.get('/skill-assessment', isAuthenticated, (req, res) => {
   if (!req.user) {
     return res.status(401).json({ success: false, message: 'Please log in to view your profile' });
   }
 
   // Render the skill assessment page with user data
-  res.render('skillAssessment', { user: req.user });
+  res.render('skillAssessment/skillAssessment', { user: req.user });
 });
 
 
 // Route to update skill assessment
-router.post('/update-skill-assessment', async (req, res) => {
+router.post('/update-skill-assessment', isAuthenticated, async (req, res) => {
   // Make sure the user is logged in.
   if (!req.user) {
     return res.status(401).json({ success: false, message: 'Please log in to update your profile' });
   }
-  
+
   // Expect arrays of strings (or a single string to be converted into an array for softSkills) from the front end.
   const { languages, tools, softSkills } = req.body;
 
@@ -81,7 +82,7 @@ const cleanText = (text) => {
 
 
 // Route to get questions from the Google GenAI API
-router.get('/skill-assessment/gemini-questions', async (req, res) => {
+router.get('/skill-assessment/gemini-questions', isAuthenticated, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ success: false, message: 'Please log in first' });
@@ -252,7 +253,7 @@ router.get('/skill-assessment/gemini-questions', async (req, res) => {
     const totalPages = Math.ceil(allQuestions.length / questionsPerPage);
     const currentQuestions = allQuestions.slice((page - 1) * questionsPerPage, page * questionsPerPage);
 
-    res.render('qna.ejs', {
+    res.render('skillAssessment/qna.ejs', {
       questions: currentQuestions,
       currentPage: page,
       totalPages,
@@ -267,7 +268,7 @@ router.get('/skill-assessment/gemini-questions', async (req, res) => {
 });
 
 
-router.post('/skill-assessment/gemini-questions', async (req, res) => {
+router.post('/skill-assessment/gemini-questions', isAuthenticated, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ success: false, message: 'Please log in first' });
@@ -339,14 +340,14 @@ router.post('/skill-assessment/gemini-questions', async (req, res) => {
 });
 
 
-router.get('/skill-assessment/performance', async (req, res) => {
+router.get('/skill-assessment/performance', isAuthenticated, async (req, res) => {
   const data = req.session.performanceData;
 
   if (!data || data.length === 0) {
-    return res.render('performance', { 
-      success_message: '', 
-      error_message: '', 
-      insights: [], 
+    return res.render('skillAssessment/performance', {
+      success_message: '',
+      error_message: '',
+      insights: [],
       chartData: { correct: 0, incorrect: 0 },
       skillsData: {}
     });
@@ -376,12 +377,12 @@ router.get('/skill-assessment/performance', async (req, res) => {
 
     // Change skillType based on certain keywords in the question.
     if (q.includes("tool") || q.includes("software") || q.includes("odoo") || q.includes("framework") ||
-        q.includes("database") || q.includes("version control") || q.includes("git") ||
-        q.includes("ui") || q.includes("ux")) {
+      q.includes("database") || q.includes("version control") || q.includes("git") ||
+      q.includes("ui") || q.includes("ux")) {
       skillType = "Tools/Software";
     } else if (q.includes("communication") || q.includes("team") ||
-               q.includes("problem solving") || q.includes("soft skill") ||
-               q.includes("collaboration") || q.includes("leadership")) {
+      q.includes("problem solving") || q.includes("soft skill") ||
+      q.includes("collaboration") || q.includes("leadership")) {
       skillType = "Soft Skills";
     }
 
@@ -444,7 +445,7 @@ router.get('/skill-assessment/performance', async (req, res) => {
     await req.user.save();
   }
 
-  res.render('performance', {
+  res.render('skillAssessment/performance', {
     success_message: 'Performance loaded successfully!',
     error_message: '',
     insights,

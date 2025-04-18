@@ -2,14 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const User = require("../models/User"); 
+const isAuthenticated = require("../middleware/Authenticated");
 
 // Initialize Gemini AI with your API key and desired model
 const genAI = new GoogleGenerativeAI("AIzaSyCaHT5AUOdo2ejsOrvbE2SN_WUYW0NsyFo");
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 // Render the chat page for authenticated users
-router.get("/career-suggestions", (req, res) => {
-    res.render("career-suggestion", { user: req.user });
+router.get("/career-suggestions", isAuthenticated, (req, res) => {
+    res.render("carrerrSuggestion/career-suggestion", { user: req.user });
 });
 
 // Route for the chatbot

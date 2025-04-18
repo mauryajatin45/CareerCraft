@@ -6,13 +6,13 @@ body {
     padding: 0;
     box-sizing: border-box;
     background-color: #f0f0f0;
-  }
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family:'Roboto', 'poppins', sans-serif;
+    font-family: 'Roboto', 'poppins', sans-serif;
 }
 
 .logo {
@@ -24,18 +24,22 @@ body {
     user-select: none;
 }
 
-.container{
+.container {
     width: 100vw !important;
+    min-height: 80vh !important;
+    min-width: 99vw !important;
+    margin-left: 0 !important;
     padding: 0 !important;
-    margin: 0 !important;
 }
-.topContainer{
+
+.topContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.2rem 3rem;
 }
-.btn{
+
+.btn {
     color: #333;
     padding: 0.5rem 1rem;
     border-radius: 5px;
