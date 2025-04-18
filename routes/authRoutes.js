@@ -2,14 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const User = require('../models/User');
 const router = express.Router();
-
-// Middleware to ensure user is authenticated
-function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next(); 
-    }
-    res.redirect('/login');
-}
+const isAuthenticated  = require('../middleware/Authenticated');
 
 // Signup route
 router.get('/signup', (req, res) => {
@@ -57,8 +50,7 @@ router.post('/login', passport.authenticate('local', {
     failureFlash: true
 }));
 
-// Home route (only accessible if logged in)
-router.get('/', isAuthenticated, (req, res) => {
+router.get('/', (req, res) => {
     res.render('home.ejs', { user: req.user });
 });
 
@@ -72,7 +64,6 @@ router.get('/logout', (req, res) => {
     });
 });
 
-// Profile route (only accessible if logged in)
 router.get('/profile', isAuthenticated, (req, res) => {
     res.render('auth/profile.ejs', { user: req.user });
 });

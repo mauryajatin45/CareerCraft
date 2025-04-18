@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const ensureAuthenticated = require("../middlewares/authMiddleware");
+const isAuthenticated  = require('../middleware/Authenticated');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const User = require("../models/User");
 
-const genAI = new GoogleGenerativeAI("AIzaSyCaHT5AUOdo2ejsOrvbE2SN_WUYW0NsyFo");
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 // Career-related keywords in multiple languages
@@ -37,7 +37,7 @@ const fieldKeywords = {
   }
 };
 
-router.post("/chat", async (req, res) => {
+router.post("/chat", isAuthenticated, async (req, res) => {
   try {
     const userMessage = req.body.message.toLowerCase();
     const selectedLanguage = req.body.language || "en";

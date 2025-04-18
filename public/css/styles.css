@@ -25,9 +25,9 @@ body {
 }
 
 .container{
-    width: 90vw !important;
+    width: 100vw !important;
     padding: 0 !important;
-    margin: auto;
+    margin: 0 !important;
 }
 .topContainer{
     display: flex;

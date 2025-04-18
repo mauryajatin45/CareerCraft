@@ -88,57 +88,47 @@ app.use('/resume', airesumeRoutes);
 app.use('/', mentorRoutes);
 
 // Video call page
-app.get('/video-call', (req, res) => {
-  res.render('video-call');
-});
+// app.get('/video-call', (req, res) => {
+//   res.render('video-call');
+// });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).render('404.ejs');
-});
+// // 404 handler
+// app.use((req, res) => {
+//   res.status(404).render('404.ejs');
+// });
 
-// Socket.io setup
-const server = http.createServer(app);
-const io = socketIO(server);
+// // Socket.io setup
+// const server = http.createServer(app);
+// const io = socketIO(server);
 
-io.on('connection', (socket) => {
-  console.log('🟢 User connected:', socket.id);
+// io.on('connection', (socket) => {
+//   console.log('🟢 User connected:', socket.id);
 
-  socket.on('join-room', (roomId) => {
-    socket.join(roomId);
-    socket.to(roomId).emit('user-connected', socket.id);
-    console.log(`🔗 Socket ${socket.id} joined room ${roomId}`);
+//   socket.on('join-room', (roomId) => {
+//     socket.join(roomId);
+//     socket.to(roomId).emit('user-connected', socket.id);
+//     console.log(`🔗 Socket ${socket.id} joined room ${roomId}`);
 
-    socket.on('offer', (data) => {
-      socket.to(roomId).emit('offer', data);
-    });
+//     socket.on('offer', (data) => {
+//       socket.to(roomId).emit('offer', data);
+//     });
 
-    socket.on('answer', (data) => {
-      socket.to(roomId).emit('answer', data);
-    });
+//     socket.on('answer', (data) => {
+//       socket.to(roomId).emit('answer', data);
+//     });
 
-    socket.on('candidate', (data) => {
-      socket.to(roomId).emit('candidate', data);
-    });
+//     socket.on('candidate', (data) => {
+//       socket.to(roomId).emit('candidate', data);
+//     });
 
-    socket.on('disconnect', () => {
-      socket.to(roomId).emit('user-disconnected', socket.id);
-      console.log('🔴 User disconnected:', socket.id);
-    });
-  });
-});
+//     socket.on('disconnect', () => {
+//       socket.to(roomId).emit('user-disconnected', socket.id);
+//       console.log('🔴 User disconnected:', socket.id);
+//     });
+//   });
+// });
 
 // Start server and ngrok tunnel
-server.listen(port, async () => {
+app.listen(port, async () => {
   console.log(`🚀 Server is running on port ${port}`);
-  
-  // Only use ngrok in development
-  if (process.env.NODE_ENV !== 'production') {
-    try {
-      const url = await ngrok.connect(port);
-      console.log(`🌐 ngrok tunnel established at: ${url}`);
-    } catch (error) {
-      console.error('❌ Error starting ngrok tunnel:', error);
-    }
-  }
 });
