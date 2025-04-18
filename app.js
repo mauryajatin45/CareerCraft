@@ -36,8 +36,8 @@ const port = process.env.PORT || 3000;
 
 // MongoDB Atlas connection
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('✅ Connected to MongoDB Atlas'))
-.catch((err) => console.error('❌ MongoDB Connection Error:', err));
+.then(() => console.log('Connected to MongoDB Atlas'))
+.catch((err) => console.error('MongoDB Connection Error:', err));
 
 // View engine and static files
 app.engine("ejs", ejsMate);
@@ -123,12 +123,16 @@ app.use('/', mentorRoutes);
 
 //     socket.on('disconnect', () => {
 //       socket.to(roomId).emit('user-disconnected', socket.id);
-//       console.log('🔴 User disconnected:', socket.id);
+//       console.log('User disconnected:', socket.id);
 //     });
 //   });
 // });
 
 // Start server and ngrok tunnel
-app.listen(port, async () => {
-  console.log(`🚀 Server is running on port ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+      console.log(`Server running on http://localhost:${port}`);
+  });
+} else {
+  module.exports = app;
+}
