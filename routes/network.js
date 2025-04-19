@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const isAuthenticated  = require('../middleware/Authenticated');
 
 // Get Twitter token from environment variables
 const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN;
@@ -65,17 +66,13 @@ async function getUserDetailsByAuthorId(authorIds) {
     }
 }
 
-// ---------------------------------------
-// Routes
-// ---------------------------------------
-
 // Render the search form page
-router.get('/network', (req, res) => {
+router.get('/network', isAuthenticated, (req, res) => {
     res.render('network-search'); // This view should include your search form
 });
 
 // Combined Search Route using Twitter/X only
-router.get('/find-connections', async (req, res) => {
+router.get('/find-connections', isAuthenticated, async (req, res) => {
     const { language } = req.query;
     if (!language) return res.status(400).send('Missing programming language.');
 

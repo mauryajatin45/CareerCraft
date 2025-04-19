@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { GoogleGenAI } = require('@google/genai');
 require('dotenv').config();
+const isAuthenticated  = require('../middleware/Authenticated');
+
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -18,10 +20,10 @@ function formatJobMarketData(rawText) {
 }
 
 router.route('/job-market')
-  .get((req, res) => {
+  .get(isAuthenticated, (req, res) => {
     res.render('index');
   })
-  .post(async (req, res) => {
+  .post(isAuthenticated, async (req, res) => {
     const { jobTitle, location } = req.body;
 
     try {
